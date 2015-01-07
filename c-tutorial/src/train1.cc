@@ -38,7 +38,7 @@ int teacher()
   	nb->NB_DEF_PRE(612);		 // flatten input variables, de-correlate input variables and rotate all linear dependence with target to the first new input variable, i.e. X(2)
 
 	char ExpertiseFile[256];
-	sprintf(ExpertiseFile,"train1_expertise.nb");
+	sprintf(ExpertiseFile,"results/train1_expertise.nb");
 
 	cout << "Will put the Expertise in " << ExpertiseFile << endl;
   	nb->SetOutputFile(ExpertiseFile);  // expert file
@@ -79,7 +79,7 @@ int teacher()
 	cout << "\t #Backgroud \t " << bkgCount << endl;
 
 	//perform training
-	cout << "To see NeuroBayes output have a look at \"nb_teacher.log\"" << endl;
+	cout << "To see NeuroBayes output have a look at \"results/train1_nb_teacher.log\"" << endl;
 	//stdout is redirected to the file "nb_teacher.log"
 	int original = dup(fileno(stdout));
    	fflush(stdout);
@@ -95,4 +95,7 @@ int teacher()
 
 int main(int argc, char** argv) {
 	teacher();
+	system("mv ahist.txt results/train1_ahist.txt");
+	system("mv rescue.nb results/train1_rescue.nb");
+	system("mv nb_teacher.log results/train1_nb_teacher.log");
 }
