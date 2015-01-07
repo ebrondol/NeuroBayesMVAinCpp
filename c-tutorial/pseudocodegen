@@ -1,0 +1,13 @@
+VARSET 1
+var0 14
+var1 19 
+var2 14
+var3 14
+var4 14 
+var5 14
+var6 14
+var7 14
+var8 19
+var9 34
+ENDVARSET
+NETWORK classify 1
