@@ -87,13 +87,13 @@ void teacher(bool Iterate)
   		nb->NB_DEF_ITER(100);            // number of training iteration
   		nb->NB_DEF_METHOD("BFGS");	   // bricht automatisch ab, wenn austrainiert
   		nb->NB_DEF_PRE(612);
-		sprintf(ExpertiseFile,"train2_iter_expertise.nb");
+		sprintf(ExpertiseFile,"results/train2_iter_expertise.nb");
 	}
 	else {
   		nb->NB_DEF_ITER(0);            // number of training iteration
   		nb->NB_DEF_SHAPE("DIAG");        // 'OFF', 'INCL', 'TOTL'
   		nb->NB_DEF_PRE(622);
-		sprintf(ExpertiseFile,"train2_expertise.nb");
+		sprintf(ExpertiseFile,"results/train2_expertise.nb");
 	}
 	//nb->NB_DEF_SHAPE("DIAG");        // 'OFF', 'INCL', 'TOTL'
 	cout << "Will put the Expertise in " << ExpertiseFile << endl;
@@ -142,7 +142,7 @@ void teacher(bool Iterate)
 	cout << "\t #Backgroud \t " << bkgCount << endl;
 
 	//perform training
-	cout << "To see NeuroBayes output have a look at \"nb_teacher.log\"" << endl;
+	cout << "To see NeuroBayes output have a look at \"results/train2_nb_teacher.log\"" << endl;
 	int original = dup(fileno(stdout));
    	fflush(stdout);
    	freopen("nb_teacher.log", "w", stdout);
@@ -154,7 +154,7 @@ void teacher(bool Iterate)
    	close(original);
 	input->Close();
 
-	nb->nb_correl_signi(c_varnames,"./correl_signi.txt","./correl_signi.html");
+	nb->nb_correl_signi(c_varnames,"./results/train2_correl_signi.txt","./results/train2_correl_signi.html");
 }
 
 int main(int argc, char** argv) {
@@ -162,11 +162,16 @@ int main(int argc, char** argv) {
 		cout << "If you want to iterate in this training call program with option \"1\" " << endl
 			<< "  " << argv[0] << " 1" << endl;
 			teacher(0);
+		system("mv ahist.txt results/train2_ahist.txt");
+		system("mv nb_teacher.log results/train2_nb_teacher.log");
 	}
 	else if(argc>=2) {
 		if(atoi(argv[1]) == 1) {
 			cout << "Will iterate! " << endl;
 			teacher(1);
+		system("mv ahist.txt results/train2_iter_ahist.txt");
+		system("mv rescue.nb results/train2_iter_rescue.nb");
+		system("mv nb_teacher.log results/train2_iter_nb_teacher.log");
 		}
 		else teacher(0);
 	}
