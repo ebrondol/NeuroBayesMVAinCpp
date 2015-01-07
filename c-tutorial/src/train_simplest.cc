@@ -30,7 +30,7 @@ int main()
 
 
 	char ExpertiseFile[256];
-	sprintf(ExpertiseFile,"train_simplest_expertise.nb");
+	sprintf(ExpertiseFile,"results/train_simplest_expertise.nb");
 
 	cout << "Will put the Expertise in " << ExpertiseFile << endl;
   	nb->SetOutputFile(ExpertiseFile);  // Define expert file
@@ -81,4 +81,7 @@ int main()
 	nb->TrainNet(); //tell NeuroBayes to train the net
 
 	input->Close();
+
+	system("mv ahist.txt results/train_simplest_ahist.txt");
+	system("mv rescue.nb results/train_simplest_rescue.nb");
 }
