@@ -118,7 +118,7 @@ int main()
 
         maxEvents = ntu_Bkg->GetEntries();
         for(int ievent=0; ievent< maxEvents; ievent++) {
-                int ientry = ntu_Sig->GetEntry(ievent);
+                int ientry = ntu_Bkg->GetEntry(ievent);
                 nb->SetWeight(1.0);
                 nb->SetTarget(-1.0);
                 bkgCount++;
