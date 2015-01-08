@@ -1,0 +1,15 @@
+STARTVARSET
+svfit_mass 14
+dr_leptau 19 
+jdeta 14
+mjj 14
+jeta1eta2 19
+pt_tot 14
+met_centrality 14
+mt_1 14
+lep_etacentrality 14
+pt_sum 14
+sphericity 14
+mvis 14
+ENDVARSET
+NETWORK classify 1

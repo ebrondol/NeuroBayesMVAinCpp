@@ -16,6 +16,7 @@ using namespace std;
 int main (int argc, char** argv) {
 
 	vector<string> ExpertiseFiles;
+	string ExpFileName;
 		cout << argc << endl;
 	int nExpertises = 0;	
 
@@ -24,11 +25,16 @@ int main (int argc, char** argv) {
 	vector <TH1F* > hists;
 	if(argc>1)
 		for (int iarg = 1; iarg < argc; iarg++) {
+
 			ExpertiseFiles.push_back(argv[iarg]);
 			NBExperts.push_back( new Expert(ExpertiseFiles.back().c_str()) );
 			cout << "Will use expertise in file '"<< ExpertiseFiles.back() << "'" << endl;	
-			hists.push_back( new TH1F( (ExpertiseFiles.back() + "_signal").c_str() ,"Diskriminator Distribution",101,-1, 1));
-			hists.push_back( new TH1F( (ExpertiseFiles.back() + "_background").c_str() ,"Diskriminator Distribution",101,-1, 1));
+  			string str = argv[iarg];
+			std::size_t pos = str.find("train");
+			ExpFileName = str.substr(pos);     // get from "train" to the end
+
+			hists.push_back( new TH1F( (ExpFileName + "_signal").c_str() ,"Diskriminator Distribution",101,-1, 1));
+			hists.push_back( new TH1F( (ExpFileName + "_background").c_str() ,"Diskriminator Distribution",101,-1, 1));
 			nExpertises++;
 		}
 	else 	

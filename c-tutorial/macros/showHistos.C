@@ -145,8 +145,8 @@ void showHistos()
 	TFile* HistoSourceFile = new TFile("evaluationsPlots.root", "READ");
 	//TFile* HistoSourceFile = new TFile("teacherHistos.root", "READ");
 
-	//HistoSourceFile->Print();
-	//HistoSourceFile->GetListOfKeys()->Print();
+	HistoSourceFile->Print();
+	HistoSourceFile->GetListOfKeys()->Print();
 	TList* KeyList = HistoSourceFile->GetListOfKeys();
 	int nHistos = HistoSourceFile->GetListOfKeys()->GetEntries();
 

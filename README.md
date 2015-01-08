@@ -12,10 +12,12 @@ First run - Basic setup :
 
 -----------------------------------------------------------
 Second Run - global PreproFlag and BFGS :
-	- qual è la differenza tra i due pdf di output?
+	- qual è la differenza tra i due pdf di output? Vengono utilizzate solo le var utili. (Look last page)
 
 -----------------------------------------------------------
 Third run - individual preprocessing flags and zero iterations :
+		root -l -q -b $NEUROBAYES/external/analysis.C'("ahist.txt","analysis.pdf",1, "correl_signi.txt")'
+
 
 -----------------------------------------------------------
 Questions:
