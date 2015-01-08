@@ -33,10 +33,10 @@ int teacher()
   nb->NB_DEF_NODE2(nvar+2);      	// nodes in hidden layer
   nb->NB_DEF_NODE3(1);       	// nodes in output layer
 
- nb->NB_DEF_ITER(100);            // number of training iteration
- nb->NB_DEF_METHOD("BFGS");	 // will stop automatically if there's nothing more to learn
- nb->NB_DEF_LEARNDIAG( 1 );	   // BFGS
- nb->NB_DEF_PRE(612);		 // flatten input variables, de-correlate input variables and rotate all linear dependence with target to the first new input variable, i.e. X(2)
+  nb->NB_DEF_ITER(100);            // number of training iteration
+  nb->NB_DEF_METHOD("BFGS");	 // will stop automatically if there's nothing more to learn
+  nb->NB_DEF_LEARNDIAG( 1 );	   // BFGS
+  nb->NB_DEF_PRE(612);		 // flatten input variables, de-correlate input variables and rotate all linear dependence with target to the first new input variable, i.e. X(2)
 
   char ExpertiseFile[256];
   sprintf(ExpertiseFile,"results/trainHtt_v2_expertise.nb");
