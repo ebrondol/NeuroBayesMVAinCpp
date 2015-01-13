@@ -108,7 +108,8 @@ void teacher(bool Iterate = 1)
   	int j=21;
   	nb->NB_RANVIN(i,j,2);            // random number seed initialisation, i has to be an odd number, the third argument is a debugging flag
 
-	//Setup DataTree
+
+  //Setup DataTree
   cout << "Reading Signal and Bkg Tree" << endl;
 
   TString dir = "Input/";
@@ -141,38 +142,61 @@ void teacher(bool Iterate = 1)
     return;
   }
 
+
   c_varnames = new char*[nvar];
   float* InputArray = new float[nvar];
   for(int ivar=0; ivar< nvar; ivar++) {
-    ntu_Sig->SetBranchAddress(varnames[ivar].c_str(), &InputArray[ivar]);
     if(preproflags[ivar] > 10)
       nb->SetIndividualPreproFlag(ivar, preproflags[ivar],varnames[ivar].c_str());
     c_varnames[ivar] = new char[varnames[ivar].size()];
     strcpy(c_varnames[ivar], varnames[ivar].c_str());
   }
 
+  //----
+  //Reading Events
+  cout << "Reading Events:" << endl;
+  int sigCount = 0, bkgCount=0;
 
-        cout << "Reading Events" << endl;
-        int sigCount = 0, bkgCount=0;
-        int maxEvents = ntu_Sig->GetEntries();
-        for(int ievent=0; ievent< maxEvents; ievent++) {
-                int ientry = ntu_Sig->GetEntry(ievent);
-                nb->SetWeight(1.0);
-                nb->SetTarget(1.0);
-                sigCount++;
-                nb->SetNextInput(nvar,InputArray);
-        }
-        cout << "\t #Signal \t " << sigCount << endl;
+  //sig events
+  for(int ivar=0; ivar< nvar; ivar++) {
+    ntu_Sig->SetBranchAddress(varnames[ivar].c_str(), &InputArray[ivar]);
+  }
 
-        maxEvents = ntu_Bkg->GetEntries();
-        for(int ievent=0; ievent< maxEvents; ievent++) {
-                int ientry = ntu_Bkg->GetEntry(ievent);
-                nb->SetWeight(1.0);
-                nb->SetTarget(0.0);
-                bkgCount++;
-                nb->SetNextInput(nvar,InputArray);
-        }
-        cout << "\t #Backgroud \t " << bkgCount << endl;
+  int maxEvents = ntu_Sig->GetEntries();
+  for(int ievent=0; ievent< maxEvents; ievent++) {
+    int ientry = ntu_Sig->GetEntry(ievent);
+    if(ientry > 0){
+      nb->SetWeight(1.0);
+      nb->SetTarget(1.0);
+      sigCount++;
+      nb->SetNextInput(nvar,InputArray);
+    } else {
+      std::cout << "Entry " << ientry << " does not exist" << std::endl;
+      continue;
+    }
+  }
+  cout << "\t #Signal \t " << sigCount << endl;
+
+
+  //bkg events
+  for(int ivar=0; ivar< nvar; ivar++) {
+    ntu_Bkg->SetBranchAddress(varnames[ivar].c_str(), &InputArray[ivar]);
+  }
+
+  maxEvents = ntu_Bkg->GetEntries();
+  for(int ievent=0; ievent< maxEvents; ievent++) {
+    int ientry = ntu_Bkg->GetEntry(ievent);
+    if(ientry > 0){
+      nb->SetWeight(1.0);
+      nb->SetTarget(0.0);
+      bkgCount++;
+      nb->SetNextInput(nvar,InputArray);
+    } else {
+      std::cout << "Entry " << ientry << " does not exist" << std::endl;
+      continue;
+    }
+ }
+ cout << "\t #Backgroud \t " << bkgCount << endl;
 
 
 	//perform training
