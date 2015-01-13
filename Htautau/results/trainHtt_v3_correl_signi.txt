@@ -3,17 +3,17 @@
  total significance:  115.637 sigma
  (additional signif. , only this var , loss when removed , global corr. to others)
 
-  1.:  variable   5: 58.52  58.52  18.23  90.3%    12 #5
-  2.:  variable   6: 79.75  44.54  17.82  90.7%    12 #6
-  3.:  variable   7: 40.82  93.27  23.51  68.9%    12 #7
-  4.:  variable   8: 30.60  81.03  21.88  58.9%    12 #8
-  5.:  variable  12: 21.41  55.91  21.97  77.0%    12 #12
-  6.:  variable  13: 12.29  71.03  10.54  71.6%    12 #13
-  7.:  variable   3: 12.31  69.03  16.77  82.9%    12 #3
-  8.:  variable  11:  8.04  93.48  12.22  92.1%    12 #11
-  9.:  variable   4:  8.13  32.27   8.69  93.5%    12 #4
- 10.:  variable   2:  7.63  41.19   7.52  64.3%    12 #2
- 11.:  variable  10:  4.90  38.14   4.88  41.7%    12 #10
- 12.:  variable   9:  3.24  30.15   3.24  27.5%    12 #9
+  1.:  variable   5: 58.52  58.52  18.23  90.3%   mjj 12 #5
+  2.:  variable   6: 79.75  44.54  17.82  90.7%   jeta1eta2 12 #6
+  3.:  variable   7: 40.82  93.27  23.51  68.9%   pt_tot 12 #7
+  4.:  variable   8: 30.60  81.03  21.88  58.9%   met_centrality 12 #8
+  5.:  variable  12: 21.41  55.91  21.97  77.0%   sphericity 12 #12
+  6.:  variable  13: 12.29  71.03  10.54  71.6%   mvis 12 #13
+  7.:  variable   3: 12.31  69.03  16.77  82.9%   dr_leptau 12 #3
+  8.:  variable  11:  8.04  93.48  12.22  92.1%   pt_sum 12 #11
+  9.:  variable   4:  8.13  32.27   8.69  93.5%   jdeta 12 #4
+ 10.:  variable   2:  7.63  41.19   7.52  64.3%   svfit_mass 12 #2
+ 11.:  variable  10:  4.90  38.14   4.88  41.7%   lep_etacentrality 12 #10
+ 12.:  variable   9:  3.24  30.15   3.24  27.5%   mt_1 12 #9
 
  Keep only 12 most significant input variables
