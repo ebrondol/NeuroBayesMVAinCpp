@@ -76,23 +76,24 @@ void teacher(bool Iterate = 1)
 
   nb->NB_DEF_TASK("CLA");    	// binominal classification (default)
 
-  nb->NB_DEF_PRE(612);		//
+  nb->NB_DEF_PRE(22);		//
   nb->NB_DEF_LOSS("ENTROPY");      // 'ENTROPY'(def),'QUADRATIC'
 
-  	//nb->NB_DEF_LEARNDIAG( 1 );	   // BFGS
-
-  	//nb->NB_DEF_EPOCH(200);           // weight update after n events
+  //nb->NB_DEF_LEARNDIAG( 1 );	   // BFGS
+  //nb->NB_DEF_EPOCH(200);           // weight update after n events
 
   	nb->NB_DEF_SPEED(1.0);           // multiplicative factor to enhance global learning speed
-  	nb->NB_DEF_MAXLEARN(1.0);        // multiplicative factor to limit the global learning speed in any direction, this number should be smaller than NB_DEF_SPEED
+  	nb->NB_DEF_MAXLEARN(2.0);        // multiplicative factor to limit the global learning speed in any direction, this number should be smaller than NB_DEF_SPEED
 
 	char ExpertiseFile[256];
 
-	if(Iterate) {
-  		nb->NB_DEF_ITER(100);            // number of training iteration
-  		//nb->NB_DEF_METHOD("BFGS");	   // bricht automatisch ab, wenn austrainiert
-		sprintf(ExpertiseFile,"results/trainHtt_v3_iter_expertise.nb");
-	}
+  if(Iterate) {
+    nb->NB_DEF_ITER(220);            // number of training iteration
+    nb->NB_DEF_SHAPE("INCL");        // 'OFF', 'INCL', 'TOTL', 'DIAG'
+    nb->NB_DEF_REG("OFF");        // 'OFF', 'RED', 'ARD', 'ASR', 'ALL'
+//  nb->NB_DEF_METHOD("BFGS");	   // bricht automatisch ab, wenn austrainiert
+    sprintf(ExpertiseFile,"results/trainHtt_v3_iter_expertise.nb");
+  }
 	else {
   		nb->NB_DEF_ITER(0);            // number of training iteration
   		nb->NB_DEF_SHAPE("DIAG");        // 'OFF', 'INCL', 'TOTL'
@@ -156,17 +157,24 @@ void teacher(bool Iterate = 1)
   //Reading Events
   cout << "Reading Events:" << endl;
   int sigCount = 0, bkgCount=0;
+  float lumi = 0.0;
+  float weight = 0.0;
+  float split = 0.0;
+
 
   //sig events
   for(int ivar=0; ivar< nvar; ivar++) {
     ntu_Sig->SetBranchAddress(varnames[ivar].c_str(), &InputArray[ivar]);
+    ntu_Sig->SetBranchAddress("lumiWeight", &lumi);
+    ntu_Sig->SetBranchAddress("weight", &weight);
+    ntu_Sig->SetBranchAddress("splitFactor", &split);
   }
 
   int maxEvents = ntu_Sig->GetEntries();
   for(int ievent=0; ievent< maxEvents; ievent++) {
     int ientry = ntu_Sig->GetEntry(ievent);
     if(ientry > 0){
-      nb->SetWeight(1.0);
+      nb->SetWeight(lumi*weight*split);
       nb->SetTarget(1.0);
       sigCount++;
       nb->SetNextInput(nvar,InputArray);
@@ -181,13 +189,17 @@ void teacher(bool Iterate = 1)
   //bkg events
   for(int ivar=0; ivar< nvar; ivar++) {
     ntu_Bkg->SetBranchAddress(varnames[ivar].c_str(), &InputArray[ivar]);
+    ntu_Bkg->SetBranchAddress("lumiWeight", &lumi);
+    ntu_Bkg->SetBranchAddress("weight", &weight);
+    ntu_Bkg->SetBranchAddress("splitFactor", &split);
+
   }
 
   maxEvents = ntu_Bkg->GetEntries();
   for(int ievent=0; ievent< maxEvents; ievent++) {
     int ientry = ntu_Bkg->GetEntry(ievent);
     if(ientry > 0){
-      nb->SetWeight(1.0);
+      nb->SetWeight(lumi*weight*split);
       nb->SetTarget(0.0);
       bkgCount++;
       nb->SetNextInput(nvar,InputArray);
