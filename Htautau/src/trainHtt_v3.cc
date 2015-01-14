@@ -11,8 +11,13 @@
 #include "TTree.h"
 
 #include "NeuroBayesTeacher.hh"
+#include "NeuroBayesExternalFunction.hh"
 
 using namespace std;
+
+string varFile = "varFileList";
+string inputFile_sig = "inputFileListHtt_sig";
+string inputFile_bkg = "inputFileListHtt_bkg";
 
 /*
 const int nXvalSamples=5;
@@ -24,48 +29,18 @@ void teacher(bool Iterate = 1)
 {
 
 
-   	std::cout << "Start NeuroBayes Setup" << std::endl
-        	<< "======================" << std::endl
-             	<< std::endl;
+  std::cout << "Start NeuroBayes Setup" << std::endl
+            << "======================" << std::endl
+            << std::endl;
 
 		
-   	std::cout << "Reading Pseudocodegenfile in" << std::endl;
-
-	string codegenfile = "variablesHtt";
-	ifstream codegen(codegenfile.c_str(), ifstream::in);
-	if(codegen.bad()) {cout << "PseudoCodegen-file " << codegenfile << " not found " << endl;return;}
-	
-	string buffer;
-	getline(codegen,buffer); //STARTVARSET auslesen
-	//cout << buffer << endl;
-
-	vector<string> varnames;
-	char** c_varnames;
-	std::vector<int> preproflags;
-
-	//int iterator=0;
-  std::cout << "Variables: " << std::endl;
-  while(true) {
-
-    getline(codegen,buffer); 
-
-    unsigned int name_end=buffer.find(" ");
-    varnames.push_back( buffer.substr(0, name_end ));
-    if(varnames.back() == "ENDVARSET") {varnames.pop_back(); break;}
-
-    std::cout << varnames.back() << std::endl;
-
-    if(name_end < buffer.size() ) {
-      string flag = buffer.substr(name_end, buffer.size());
-      preproflags.push_back( atoi(flag.c_str()) );
-    }
-    else preproflags.push_back(0);
-
-  }
 
 
+  map<string, int> VarProProFlagsMap;
+  VarProProFlagsMap = readVarFile(varFile, true);
 
-  int nvar = varnames.size();
+  char** c_varnames;
+  int nvar = VarProProFlagsMap.size();
 
   //create NeuroBayes instance
   NeuroBayesTeacher* nb = NeuroBayesTeacher::Instance();
@@ -82,10 +57,10 @@ void teacher(bool Iterate = 1)
   //nb->NB_DEF_LEARNDIAG( 1 );	   // BFGS
   //nb->NB_DEF_EPOCH(200);           // weight update after n events
 
-  	nb->NB_DEF_SPEED(1.0);           // multiplicative factor to enhance global learning speed
-  	nb->NB_DEF_MAXLEARN(2.0);        // multiplicative factor to limit the global learning speed in any direction, this number should be smaller than NB_DEF_SPEED
+  nb->NB_DEF_SPEED(1.0);           // multiplicative factor to enhance global learning speed
+  nb->NB_DEF_MAXLEARN(2.0);        // multiplicative factor to limit the global learning speed in any direction, this number should be smaller than NB_DEF_SPEED
 
-	char ExpertiseFile[256];
+  char ExpertiseFile[256];
 
   if(Iterate) {
     nb->NB_DEF_ITER(220);            // number of training iteration
@@ -93,51 +68,40 @@ void teacher(bool Iterate = 1)
     nb->NB_DEF_REG("OFF");        // 'OFF', 'RED', 'ARD', 'ASR', 'ALL'
 //  nb->NB_DEF_METHOD("BFGS");	   // bricht automatisch ab, wenn austrainiert
     sprintf(ExpertiseFile,"results/trainHtt_v3_iter_expertise.nb");
+  } else {
+    nb->NB_DEF_ITER(0);            // number of training iteration
+    nb->NB_DEF_SHAPE("DIAG");        // 'OFF', 'INCL', 'TOTL'
+    nb->NB_DEF_PRE(622);
+    sprintf(ExpertiseFile,"results/trainHtt_v3_expertise.nb");
   }
-	else {
-  		nb->NB_DEF_ITER(0);            // number of training iteration
-  		nb->NB_DEF_SHAPE("DIAG");        // 'OFF', 'INCL', 'TOTL'
-  		nb->NB_DEF_PRE(622);
-		sprintf(ExpertiseFile,"results/trainHtt_v3_expertise.nb");
-	}
-	//nb->NB_DEF_SHAPE("DIAG");        // 'OFF', 'INCL', 'TOTL'
-	cout << "Will put the Expertise in " << ExpertiseFile << endl;
-  	nb->SetOutputFile(ExpertiseFile);  // expert file
 
+  cout << "Will put the Expertise in " << ExpertiseFile << endl;
+  nb->SetOutputFile(ExpertiseFile);  // expert file
 
-  	int i= 4701;
-  	int j=21;
-  	nb->NB_RANVIN(i,j,2);            // random number seed initialisation, i has to be an odd number, the third argument is a debugging flag
+  //-----
+  //Random seed number initialisation
+  int i= 4701;
+  int j=21;
+  nb->NB_RANVIN(i,j,2);            //i has to be an odd number, the third argument is a debugging flag
 
-
+  //-----
   //Setup DataTree
-  cout << "Reading Signal and Bkg Tree" << endl;
-
-  TString dir = "Input/";
-  std::vector<TString> SignalFiles;
-  std::vector<TString> BkgFiles;
-
-  SignalFiles.push_back(dir+"train_mvain_mu_sync_vbfhiggs_0.root");
-  SignalFiles.push_back(dir+"train_mvain_mu_sync_vbfhiggs_norecoil_0.root");
-
-  BkgFiles.push_back(dir+"train_mvain_mu_sync_dy1j_0.root");
-  BkgFiles.push_back(dir+"train_mvain_mu_sync_dy2j_0.root");
-  BkgFiles.push_back(dir+"train_mvain_mu_sync_dy3j_0.root");
-  BkgFiles.push_back(dir+"train_mvain_mu_sync_dy4j_0.root");
+  vector<TString> SignalFiles = readInputFile(inputFile_sig);
+  vector<TString> BkgFiles = readInputFile(inputFile_bkg);
 
   std::cout << "Input files:" << std::endl;
-  TChain* ntu_Sig = new TChain("TauCheck");
+  TChain* ntu_sig = new TChain("TauCheck");
   for(unsigned int i = 0; i < SignalFiles.size(); i++){
-    ntu_Sig -> Add(SignalFiles.at(i));
+    ntu_sig -> Add(SignalFiles.at(i));
     std::cout << "\t" << SignalFiles.at(i) << " added at the Sig chain." << std::endl;
   }
-  TChain* ntu_Bkg = new TChain("TauCheck");
+  TChain* ntu_bkg = new TChain("TauCheck");
   for(unsigned int i = 0; i < BkgFiles.size(); i++){
-    ntu_Bkg -> Add(BkgFiles.at(i));
+    ntu_bkg -> Add(BkgFiles.at(i));
     std::cout << "\t" << BkgFiles.at(i) << " added at the Bkg chain." << std::endl;
   }
 
-  if( ntu_Sig->GetEntries() == 0 || ntu_Bkg->GetEntries() == 0 )
+  if( ntu_sig->GetEntries() == 0 || ntu_bkg->GetEntries() == 0 )
   {
     std::cout << "Error!! at least one file is empty" << std::endl;
     return;
@@ -146,11 +110,13 @@ void teacher(bool Iterate = 1)
 
   c_varnames = new char*[nvar];
   float* InputArray = new float[nvar];
-  for(int ivar=0; ivar< nvar; ivar++) {
-    if(preproflags[ivar] > 10)
-      nb->SetIndividualPreproFlag(ivar, preproflags[ivar],varnames[ivar].c_str());
-    c_varnames[ivar] = new char[varnames[ivar].size()];
-    strcpy(c_varnames[ivar], varnames[ivar].c_str());
+  int ivar = 0;
+  for( std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
+    if( it->second > 10)
+      nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
+    c_varnames[ivar] = new char[it->first.size()];
+    strcpy(c_varnames[ivar], it->first.c_str());
+    ivar++;
   }
 
   //----
@@ -163,16 +129,18 @@ void teacher(bool Iterate = 1)
 
 
   //sig events
-  for(int ivar=0; ivar< nvar; ivar++) {
-    ntu_Sig->SetBranchAddress(varnames[ivar].c_str(), &InputArray[ivar]);
-    ntu_Sig->SetBranchAddress("lumiWeight", &lumi);
-    ntu_Sig->SetBranchAddress("weight", &weight);
-    ntu_Sig->SetBranchAddress("splitFactor", &split);
+  ivar = 0;
+  for(std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
+    ntu_sig->SetBranchAddress(it->first.c_str(), &InputArray[ivar]);
+    ivar++;
   }
+  ntu_sig->SetBranchAddress("lumiWeight", &lumi);
+  ntu_sig->SetBranchAddress("weight", &weight);
+  ntu_sig->SetBranchAddress("splitFactor", &split);
 
-  int maxEvents = ntu_Sig->GetEntries();
+  int maxEvents = ntu_sig->GetEntries();
   for(int ievent=0; ievent< maxEvents; ievent++) {
-    int ientry = ntu_Sig->GetEntry(ievent);
+    int ientry = ntu_sig->GetEntry(ievent);
     if(ientry > 0){
       nb->SetWeight(lumi*weight*split);
       nb->SetTarget(1.0);
@@ -187,17 +155,18 @@ void teacher(bool Iterate = 1)
 
 
   //bkg events
-  for(int ivar=0; ivar< nvar; ivar++) {
-    ntu_Bkg->SetBranchAddress(varnames[ivar].c_str(), &InputArray[ivar]);
-    ntu_Bkg->SetBranchAddress("lumiWeight", &lumi);
-    ntu_Bkg->SetBranchAddress("weight", &weight);
-    ntu_Bkg->SetBranchAddress("splitFactor", &split);
-
+  ivar = 0;
+  for(std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
+    ntu_bkg->SetBranchAddress(it->first.c_str(), &InputArray[ivar]);
+    ivar++;
   }
+  ntu_bkg->SetBranchAddress("lumiWeight", &lumi);
+  ntu_bkg->SetBranchAddress("weight", &weight);
+  ntu_bkg->SetBranchAddress("splitFactor", &split);
 
-  maxEvents = ntu_Bkg->GetEntries();
+  maxEvents = ntu_bkg->GetEntries();
   for(int ievent=0; ievent< maxEvents; ievent++) {
-    int ientry = ntu_Bkg->GetEntry(ievent);
+    int ientry = ntu_bkg->GetEntry(ievent);
     if(ientry > 0){
       nb->SetWeight(lumi*weight*split);
       nb->SetTarget(0.0);
@@ -226,6 +195,7 @@ void teacher(bool Iterate = 1)
 	//input->Close();
 
 	nb->nb_correl_signi(c_varnames,"./results/trainHtt_v3_correl_signi.txt","./results/trainHtt_v3_correl_signi.html");
+
 }
 
 int main(int argc, char** argv) {

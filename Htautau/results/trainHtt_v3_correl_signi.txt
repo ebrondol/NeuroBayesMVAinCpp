@@ -3,12 +3,12 @@
  total significance:  23.543 sigma
  (additional signif. , only this var , loss when removed , global corr. to others)
 
-  1.:  variable   3: 18.92  18.92  17.76  20.4%   jdeta 24 #3
-  2.:  variable   2:  9.66  10.28   4.54  67.4%   svfit_mass 24 #2
-  3.:  variable   4:  5.40   3.84   6.59  35.7%   pt_tot 25 #4
-  4.:  variable   7:  5.90   3.66   6.08  35.3%   pt_sum 23 #7
-  5.:  variable   8:  4.67  10.08   4.59  67.9%   mvis 14 #8
-  6.:  variable   6:  4.09   8.00   4.08  19.4%   lep_etacentrality 12 #6
-  7.:  variable   5:  0.63   1.12   0.63  31.7%   met_centrality 23 #5
+  1.:  variable   2: 18.92  18.92  17.76  20.4%   jdeta 24 #2
+  2.:  variable   8:  9.66  10.28   4.54  67.4%   svfit_mass 24 #8
+  3.:  variable   7:  5.40   3.84   6.59  35.7%   pt_tot 25 #7
+  4.:  variable   6:  5.90   3.66   6.08  35.3%   pt_sum 23 #6
+  5.:  variable   5:  4.67  10.08   4.59  67.9%   mvis 14 #5
+  6.:  variable   3:  4.09   8.00   4.08  19.4%   lep_etacentrality 12 #3
+  7.:  variable   4:  0.63   1.12   0.63  31.7%   met_centrality 23 #4
 
  Keep only 7 most significant input variables

@@ -7,3 +7,4 @@ lep_etacentrality 12
 pt_sum 23
 mvis 14
 ENDVARSET
+NETWORK classify 1
