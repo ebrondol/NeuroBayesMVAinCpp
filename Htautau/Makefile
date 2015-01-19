@@ -44,6 +44,9 @@ train%: src/train%.o
 expert: src/expert.cc	
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(ROOTLIBS) $(NBLIBS) -lNeuroBayesExpertCPP $(CXXOUT)$@  $<
 
+test: src/testHtt_v1.cc	
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(ROOTLIBS) $(NBLIBS) -lNeuroBayesExpertCPP $(CXXOUT)$@  $<
+
 totalyclean:
 	rm -rf train1_expertise.nb train2_expertise.nb train2_iter_expertise.nb rescue.nb teacherHistos.root
 	rm -rf ahist.txt  analysis.ps cmaplog.txt cmaplog2.txt correl_signi.* nb_teacher.log 

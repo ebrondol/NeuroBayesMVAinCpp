@@ -142,7 +142,7 @@ void Plot(TCanvas* canvas) {
 
 void showHistos()
 {
-	TFile* HistoSourceFile = new TFile("evaluationsPlots.root", "READ");
+	TFile* HistoSourceFile = new TFile("results/HttEvaluationsPlots.root", "READ");
 	//TFile* HistoSourceFile = new TFile("teacherHistos.root", "READ");
 
 	HistoSourceFile->Print();

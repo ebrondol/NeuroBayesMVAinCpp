@@ -18,12 +18,34 @@ Second Run - global PreproFlag and BFGS :
 Third run - individual preprocessing flags and zero iterations :
 		root -l -q -b $NEUROBAYES/external/analysis.C'("ahist.txt","analysis.pdf",1, "correl_signi.txt")'
 
+-----------------------------------------------------------
+Running the Expert - using the Expertise :
+	We will use this tool to compare the discriminator distribution for the different trains.
+	Before to run we need to create test data.
+		make expert
+		make testdata
+		./expert train∗.nb
+	It will create evaluationsPlots.root cointaining the TH1F comparisons.
+	Have a look at them with the following macro!
+		root -l macros/showHistos.C+
+
+
+
+
+
+
+
+
+
+
+
+
 
 -----------------------------------------------------------
 Questions:
 	in HowToCpp.pdf 
 	1. where is produced the The Teacher text output? in nb_teacher_train1.log
 	2. correl_signi_cmap method? prodotto in src/train2.cc
-	3. what is the Expert?
+	3. what is the Expert? Testing data after training.
 
 

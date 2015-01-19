@@ -16,8 +16,8 @@
 using namespace std;
 
 string varFile = "config/varFileList";
-string inputFile_sig = "config/inputFileListHtt_sig";
-string inputFile_bkg = "config/inputFileListHtt_bkg";
+string inputFile_sig = "config/inputFileList_Htt_train_sig";
+string inputFile_bkg = "config/inputFileList_Htt_train_bkg";
 
 /*
 const int nXvalSamples=5;
@@ -37,7 +37,7 @@ void teacher(bool Iterate = 1)
 
 
   map<string, int> VarProProFlagsMap;
-  VarProProFlagsMap = readVarFile(varFile, true);
+  VarProProFlagsMap = readVarFile(varFile, false);
 
   char** c_varnames;
   int nvar = VarProProFlagsMap.size();
@@ -66,8 +66,8 @@ void teacher(bool Iterate = 1)
     nb->NB_DEF_ITER(220);            // number of training iteration
     nb->NB_DEF_SHAPE("INCL");        // 'OFF', 'INCL', 'TOTL', 'DIAG'
     nb->NB_DEF_REG("OFF");        // 'OFF', 'RED', 'ARD', 'ASR', 'ALL'
-//  nb->NB_DEF_METHOD("BFGS");	   // bricht automatisch ab, wenn austrainiert
-    sprintf(ExpertiseFile,"results/trainHtt_v3_iter_expertise.nb");
+    nb->NB_DEF_METHOD("BFGS");	   // bricht automatisch ab, wenn austrainiert
+    sprintf(ExpertiseFile,"results/trainHtt_v3_iter_BFGS_expertise.nb");
   } else {
     nb->NB_DEF_ITER(0);            // number of training iteration
     nb->NB_DEF_SHAPE("DIAG");        // 'OFF', 'INCL', 'TOTL'
@@ -86,8 +86,8 @@ void teacher(bool Iterate = 1)
 
   //-----
   //Setup DataTree
-  vector<TString> SignalFiles = readInputFile(inputFile_sig);
-  vector<TString> BkgFiles = readInputFile(inputFile_bkg);
+  vector<TString> SignalFiles = readInputFile(inputFile_sig, false);
+  vector<TString> BkgFiles = readInputFile(inputFile_bkg, false);
 
   std::cout << "Input files:" << std::endl;
   TChain* ntu_sig = new TChain("TauCheck");
