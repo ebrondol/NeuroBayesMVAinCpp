@@ -15,9 +15,9 @@
 
 using namespace std;
 
-string varFile = "varFileList";
-string inputFile_sig = "inputFileListHtt_sig";
-string inputFile_bkg = "inputFileListHtt_bkg";
+string varFile = "config/varFileList";
+string inputFile_sig = "config/inputFileListHtt_sig";
+string inputFile_bkg = "config/inputFileListHtt_bkg";
 
 /*
 const int nXvalSamples=5;
