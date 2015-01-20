@@ -30,7 +30,7 @@ NBLIBS        =  -L$(NEUROBAYES)/lib
 CXXFLAGS      += $(ROOTCFLAGS) -I. -I$(NEUROBAYES)/include -Iinc 
 LIBS          = $(ROOTLIBS) $(NBLIBS) -lNeuroBayesTeacherCPP 
 
-default : train_simplest train1 train2  
+default : trainHtt  
 
 clean:
 	@rm -rf src/*.o train* expert
@@ -41,10 +41,7 @@ src/%.o: src/%.cc
 train%: src/train%.o  
 	@$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
 	
-expert: src/expert.cc	
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(ROOTLIBS) $(NBLIBS) -lNeuroBayesExpertCPP $(CXXOUT)$@  $<
-
-test: src/testHtt_v1.cc	
+test: src/testHtt_all.cc	
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(ROOTLIBS) $(NBLIBS) -lNeuroBayesExpertCPP $(CXXOUT)$@  $<
 
 totalyclean:
@@ -54,16 +51,3 @@ totalyclean:
 	rm -rf */*.d */*.so
 	rm -rf data/*.root
 
-trainingdata: 
-	@root -l -q data/gen_trainfiles.cc+
-	@mv Trainings_Data.root data
-
-testdata: 
-	@root -l -q data/gen_trainfiles.cc+
-	@mv Trainings_Data.root data/testData.root
-
-runall: trainingdata train_simplest train1 train2
-	./train_simplest
-	./train1 
-	./train2
-	./train2 1

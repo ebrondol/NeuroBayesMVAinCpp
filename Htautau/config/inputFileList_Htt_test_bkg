@@ -1,7 +1,7 @@
 STARTINPUTFILESLIST
-Input/test_mvain_mu_sync_dy1j_0.root
-Input/test_mvain_mu_sync_dy2j_0.root
-Input/test_mvain_mu_sync_dy3j_0.root
-Input/test_mvain_mu_sync_dy4j_0.root
+input/test_mvain_mu_sync_dy1j_0.root
+input/test_mvain_mu_sync_dy2j_0.root
+input/test_mvain_mu_sync_dy3j_0.root
+input/test_mvain_mu_sync_dy4j_0.root
 ENDINPUTFILELIST
 
