@@ -80,6 +80,9 @@ int main (int argc, char** argv) {
   //Reading Events
   cout << "Reading Events:" << endl;
   int sigCount = 0, bkgCount=0;
+  float lumi = 0.0;
+  float weight = 0.0;
+  float split = 0.0;
 
   //sig events
   ivar = 0;
@@ -87,6 +90,9 @@ int main (int argc, char** argv) {
     ntu_sig->SetBranchAddress(it->first.c_str(), &InputArray[ivar]);
     ivar++;
   }
+  ntu_sig->SetBranchAddress("lumiWeight", &lumi);
+  ntu_sig->SetBranchAddress("weight", &weight);
+  ntu_sig->SetBranchAddress("splitFactor", &split);
 
   int maxEvents = ntu_sig->GetEntries();
   for(int ievent=0; ievent< maxEvents; ievent++) {
@@ -94,7 +100,7 @@ int main (int argc, char** argv) {
     if(ientry > 0){
       sigCount++;
       for(int iExpert=0; iExpert< nExpertises; iExpert++) {
-        hists[2*iExpert]->Fill(NBExperts[iExpert]->nb_expert(InputArray));
+        hists[2*iExpert]->Fill(NBExperts[iExpert]->nb_expert(InputArray), lumi*weight*split);
       }
     } else {
       std::cout << "Entry " << ientry << " does not exist" << std::endl;
@@ -110,6 +116,9 @@ int main (int argc, char** argv) {
     ntu_bkg->SetBranchAddress(it->first.c_str(), &InputArray[ivar]);
     ivar++;
   }
+  ntu_bkg->SetBranchAddress("lumiWeight", &lumi);
+  ntu_bkg->SetBranchAddress("weight", &weight);
+  ntu_bkg->SetBranchAddress("splitFactor", &split);
 
   maxEvents = ntu_bkg->GetEntries();
   for(int ievent=0; ievent< maxEvents; ievent++) {
@@ -117,7 +126,7 @@ int main (int argc, char** argv) {
     if(ientry > 0){
       bkgCount++;
       for(int iExpert=0; iExpert< nExpertises; iExpert++) {
-        hists[2*iExpert + 1]->Fill(NBExperts[iExpert]->nb_expert(InputArray));
+        hists[2*iExpert + 1]->Fill(NBExperts[iExpert]->nb_expert(InputArray), lumi*weight*split);
       }
     } else {
       std::cout << "Entry " << ientry << " does not exist" << std::endl;
@@ -129,41 +138,5 @@ int main (int argc, char** argv) {
   output.Write();
   output.Close();
 
-/*	TFile *input(0);
-	TString fname = "data/testData.root";
-      	if (!gSystem->AccessPathName( fname )) {
-         	std::cout << "--- NeuroBayesTeacher  : accessing " << fname << std::endl;
-         	input = TFile::Open( fname );
-      	}
-	else {
-		cout << fname << " could not be found, please generate it, or copy it to this folder " << endl;
-		return 1;
-	}
-      	TTree *InputTree     = (TTree*)input->Get("tree");
-	cout << "Tree accessed" << endl;
-
-	const int nvar = 10;
-	float* InputArray = new float[nvar];
-	for(int ivar=0; ivar< nvar; ivar++) {
-		char varname[10];
-		sprintf(varname,"var%d",ivar);
-		InputTree->SetBranchAddress(varname, &InputArray[ivar]);
-	}
-	float target;
-	InputTree->SetBranchAddress("target", &target);
-
-	int maxEvents = InputTree->GetEntries();
-	for(int ievent=0; ievent< maxEvents; ievent++) {
-		int ientry = InputTree->GetEntry(ievent);
-		for(int iExpert=0; iExpert< nExpertises; iExpert++) {
-			if(target) hists[2*iExpert]->Fill(NBExperts[iExpert]->nb_expert(InputArray));
-			else  hists[2*iExpert + 1]->Fill(NBExperts[iExpert]->nb_expert(InputArray));
-		}
-	}
-
-	input->Close();
-	output.Write();
-	output.Close();
-*/
 }
 

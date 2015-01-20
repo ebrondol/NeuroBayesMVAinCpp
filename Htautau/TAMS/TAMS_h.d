@@ -27,6 +27,8 @@
 ./TAMS/TAMS_h.so: /usr/include/root/GuiTypes.h /usr/include/root/Buttons.h
 ./TAMS/TAMS_h.so: /usr/include/root/TQObject.h /usr/include/root/TAttBBox2D.h
 ./TAMS/TAMS_h.so: /usr/include/root/TAttCanvas.h
-./TAMS/TAMS_h.so: /usr/include/root/TCanvasImp.h /usr/include/root/TStyle.h
+./TAMS/TAMS_h.so: /usr/include/root/TCanvasImp.h /usr/include/root/TLegend.h
+./TAMS/TAMS_h.so: /usr/include/root/TPave.h /usr/include/root/TBox.h
+./TAMS/TAMS_h.so: /usr/include/root/TStyle.h
 ./TAMS/TAMS_h.so: /usr/include/root/cintdictversion.h /usr/include/root/RVersion.h
 TAMS_h__ROOTBUILDVERSION= 5.34/20
