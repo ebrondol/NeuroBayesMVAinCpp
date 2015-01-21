@@ -12,10 +12,12 @@
 
 #include "NeuroBayesTeacher.hh"
 #include "NeuroBayesExternalFunction.hh"
+#include "ntpleUtils.h"
 
 using namespace std;
 
 string varFile = "config/varFileList";
+string optionFile = "config/optionList";
 string inputFile_sig = "config/inputFileList_Htt_train_sig";
 string inputFile_bkg = "config/inputFileList_Htt_train_bkg";
 
@@ -29,30 +31,42 @@ void teacher(bool Iterate = 1)
 {
 
 
-  std::cout << "Start NeuroBayes Setup" << std::endl
-            << "======================" << std::endl
+  std::cout << "=========================" << std::endl
+            << "Start NeuroBayes Training" << std::endl
             << std::endl;
 
-		
 
-
+  //-----		
+  //Read Info from Congif Files && setting the NeuroBayesTeacher
   map<string, int> VarProProFlagsMap;
   VarProProFlagsMap = readVarFile(varFile, false);
+  string OptionValue;
+  const char * OptionValue_char;
+  int OptionValue_int;
 
   char** c_varnames;
   int nvar = VarProProFlagsMap.size();
 
-  //create NeuroBayes instance
   NeuroBayesTeacher* nb = NeuroBayesTeacher::Instance();
 
   nb->NB_DEF_NODE1(nvar+1);	// nodes in input layer
   nb->NB_DEF_NODE2(nvar+2);	// nodes in hidden layer
   nb->NB_DEF_NODE3(1);     	// nodes in output layer
 
-  nb->NB_DEF_TASK("CLA");    	// binominal classification (default)
+  // kind of classification
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_TASK");
+  OptionValue_char = OptionValue.c_str();
+  nb->NB_DEF_TASK(OptionValue_char);
 
-  nb->NB_DEF_PRE(22);		//
-  nb->NB_DEF_LOSS("ENTROPY");      // 'ENTROPY'(def),'QUADRATIC'
+  // preprocessing global flag
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_PRE");
+  OptionValue_int = atoi(OptionValue.c_str());
+  nb->NB_DEF_PRE(OptionValue_int);
+
+  // energy loss function : ENTROPY, QUADRATIC
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_LOSS");
+  OptionValue_char = OptionValue.c_str();
+  nb->NB_DEF_LOSS(OptionValue_char);
 
   //nb->NB_DEF_LEARNDIAG( 1 );	   // BFGS
   //nb->NB_DEF_EPOCH(200);           // weight update after n events

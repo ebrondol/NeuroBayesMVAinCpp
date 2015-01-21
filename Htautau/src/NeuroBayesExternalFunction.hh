@@ -97,3 +97,39 @@ std::vector<TString> readInputFile(string ConfigFileName, bool debug = false){
   return FileNames;
 }
 
+
+string readStringOptionFromFile(string ConfigFileName, string ChoosenOption, bool debug = false){
+
+  ifstream codegen(ConfigFileName.c_str(), ifstream::in);
+  string Value;
+
+  if(codegen.bad()) {
+    cout << "PseudoCodegen-file " << ConfigFileName << " not found " << endl;
+    return Value;
+  } else {
+    if(debug) cout << "Reading Pseudocodegenfile in " << ConfigFileName << endl;
+  }
+
+  string buffer;
+  getline(codegen,buffer);              //STARTOPTIONSLIST
+  if(debug) cout << buffer << endl;
+
+  while(true) {
+
+    getline(codegen,buffer);
+    unsigned int name_end = buffer.find(" ");
+    string Option = buffer.substr(0, name_end ); 
+
+    if( Option == "ENDOPTIONSLIST") {
+      break;
+    } 
+
+    if( Option == ChoosenOption ) {
+      Value = buffer.substr(name_end+1, buffer.size());
+      if(debug) cout << "Read var: " << Option << " with value: " << Value <<endl;
+      return Value;
+    }
+  }
+      
+  return Value;
+}
