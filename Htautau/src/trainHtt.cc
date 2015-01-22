@@ -12,22 +12,17 @@
 
 #include "NeuroBayesTeacher.hh"
 #include "NeuroBayesExternalFunction.hh"
-#include "ntpleUtils.h"
 
 using namespace std;
 
-string varFile = "config/varFileList";
-string optionFile = "config/optionList";
-string inputFile_sig = "config/inputFileList_Htt_train_sig";
-string inputFile_bkg = "config/inputFileList_Htt_train_bkg";
-
+string outputDir = "results/";
 /*
 const int nXvalSamples=5;
 const int nXvalThisPart=1;
 */
    
 // ---------------------------------------------------------------
-void teacher(bool Iterate = 1) 
+void teacher(string varFile, string optionFile, string inputFile_sig, string inputFile_bkg) 
 {
 
 
@@ -41,8 +36,6 @@ void teacher(bool Iterate = 1)
   map<string, int> VarProProFlagsMap;
   VarProProFlagsMap = readVarFile(varFile, false);
   string OptionValue;
-  const char * OptionValue_char;
-  int OptionValue_int;
 
   char** c_varnames;
   int nvar = VarProProFlagsMap.size();
@@ -53,44 +46,13 @@ void teacher(bool Iterate = 1)
   nb->NB_DEF_NODE2(nvar+2);	// nodes in hidden layer
   nb->NB_DEF_NODE3(1);     	// nodes in output layer
 
-  // kind of classification
-  OptionValue = readStringOptionFromFile(optionFile, "DEF_TASK");
-  OptionValue_char = OptionValue.c_str();
-  nb->NB_DEF_TASK(OptionValue_char);
+  string output = outputDir +  "trainHtt" + DefineNBFeatures(nb, optionFile);
 
-  // preprocessing global flag
-  OptionValue = readStringOptionFromFile(optionFile, "DEF_PRE");
-  OptionValue_int = atoi(OptionValue.c_str());
-  nb->NB_DEF_PRE(OptionValue_int);
-
-  // energy loss function : ENTROPY, QUADRATIC
-  OptionValue = readStringOptionFromFile(optionFile, "DEF_LOSS");
-  OptionValue_char = OptionValue.c_str();
-  nb->NB_DEF_LOSS(OptionValue_char);
-
-  //nb->NB_DEF_LEARNDIAG( 1 );	   // BFGS
-  //nb->NB_DEF_EPOCH(200);           // weight update after n events
-
-  nb->NB_DEF_SPEED(1.0);           // multiplicative factor to enhance global learning speed
-  nb->NB_DEF_MAXLEARN(2.0);        // multiplicative factor to limit the global learning speed in any direction, this number should be smaller than NB_DEF_SPEED
-
-  char ExpertiseFile[256];
-
-  if(Iterate) {
-    nb->NB_DEF_ITER(220);            // number of training iteration
-    nb->NB_DEF_SHAPE("INCL");        // 'OFF', 'INCL', 'TOTL', 'DIAG'
-    nb->NB_DEF_REG("OFF");        // 'OFF', 'RED', 'ARD', 'ASR', 'ALL'
-    nb->NB_DEF_METHOD("BFGS");	   // bricht automatisch ab, wenn austrainiert
-    sprintf(ExpertiseFile,"results/trainHtt_iter_BFGS_expertise.nb");
-  } else {
-    nb->NB_DEF_ITER(0);            // number of training iteration
-    nb->NB_DEF_SHAPE("DIAG");        // 'OFF', 'INCL', 'TOTL'
-    nb->NB_DEF_PRE(622);
-    sprintf(ExpertiseFile,"results/trainHtt_expertise.nb");
-  }
-
+  //-----
+  //Setting the Expertise File
+  string ExpertiseFile = output + "_expertise.nb";
   cout << "Will put the Expertise in " << ExpertiseFile << endl;
-  nb->SetOutputFile(ExpertiseFile);  // expert file
+  nb->SetOutputFile(ExpertiseFile.c_str());  
 
   //-----
   //Random seed number initialisation
@@ -190,43 +152,63 @@ void teacher(bool Iterate = 1)
       std::cout << "Entry " << ientry << " does not exist" << std::endl;
       continue;
     }
- }
- cout << "\t #Backgroud \t " << bkgCount << endl;
+  }
+  cout << "\t #Backgroud \t " << bkgCount << endl;
 
 
-	//perform training
-	if(Iterate)	cout << "To see NeuroBayes output have a look at \"results/trainHtt_iter_nb_teacher.log\"" << endl;
-	if(!Iterate)	cout << "To see NeuroBayes output have a look at \"results/trainHtt_nb_teacher.log\"" << endl;
-	int original = dup(fileno(stdout));
-   	fflush(stdout);
-   	freopen("nb_teacher.log", "w", stdout);
+  //perform training
+  string LogName = output + "_nb_teacher.log";
+  cout << "To see NeuroBayes output have a look at " << LogName << endl;
+  int original = dup(fileno(stdout));
+  fflush(stdout);
+  freopen(LogName.c_str(), "w", stdout);
 
-	nb->TrainNet();
+  nb->TrainNet();
 
-	fflush(stdout);
-   	dup2(original, fileno(stdout));
-   	close(original);
-	//input->Close();
+  fflush(stdout);
+  dup2(original, fileno(stdout));
+  close(original);
 
-	nb->nb_correl_signi(c_varnames,"./results/trainHtt_correl_signi.txt","./results/trainHtt_correl_signi.html");
+  string CorrelNameTxt  = output + "_correl_signi.txt";
+  string CorrelNameHtml = output + "_correl_signi.html";
+  nb->nb_correl_signi(c_varnames,CorrelNameTxt.c_str(),CorrelNameHtml.c_str());
+
+  string ahistName = "mv ahist.txt " + output + "_ahist.txt";
+  system(ahistName.c_str());
+  string rescueName = "mv rescue.nb " + output + "_rescue.nb";
+  system(rescueName.c_str());
 
 }
 
+
+
 int main(int argc, char** argv) {
 
-  if(argc<2) {
-    cout << "Default: iteration " << endl;
-    teacher();
-    system("mv ahist.txt results/trainHtt_iter_ahist.txt");
-    system("mv rescue.nb results/trainHtt_iter_rescue.nb");
-    system("mv nb_teacher.log results/trainHtt_iter_nb_teacher.log");
-  } else if(argc>=2) {
-    if(atoi(argv[1]) == 1) {
-    cout << "With option 1 you are not iterated " << endl;
-    teacher(0);
-    system("mv ahist.txt results/trainHtt_ahist.txt");
-    system("mv nb_teacher.log results/trainHtt_nb_teacher.log");
-  }
-  else teacher();
-  }
+
+  if(argc<5 || argc>5) {
+
+    if(argc==1){
+      cout << "Running with default options files" << endl;
+      teacher("config/varFileList","config/optionList","config/inputFileList_Htt_train_sig","config/inputFileList_Htt_train_bkg");
+    } else {
+      cerr << "Number of arguments not correct." << endl;
+      cerr << "You should give in input the following input files: " << endl;
+      cerr << "\t variables config file " << endl;
+      cerr << "\t options config file " << endl;
+      cerr << "\t input data signal config file " << endl;
+      cerr << "\t input data background config file " << endl;
+    }
+
+  } else if (argc==5) {
+
+    string varFile = argv[1];
+    string optionFile = argv[2];
+    string inputFile_sig = argv[3];
+    string inputFile_bkg = argv[4];
+
+    teacher(varFile,optionFile,inputFile_sig,inputFile_bkg);
+
+  } 
+
+
 }

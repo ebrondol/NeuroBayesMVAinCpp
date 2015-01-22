@@ -133,3 +133,73 @@ string readStringOptionFromFile(string ConfigFileName, string ChoosenOption, boo
       
   return Value;
 }
+
+
+string DefineNBFeatures(NeuroBayesTeacher* nb, string optionFile){
+
+  string OptionValue;
+  const char * OptionValue_char;
+  int OptionValue_int;
+  string outputname;
+
+  // kind of classification
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_TASK");
+  OptionValue_char = OptionValue.c_str();
+  nb->NB_DEF_TASK(OptionValue_char);
+  outputname += "_TASK" + OptionValue;
+
+  // preprocessing global flag
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_PRE");
+  OptionValue_int = atoi(OptionValue.c_str());
+  nb->NB_DEF_PRE(OptionValue_int);
+  outputname += "_PRE" + OptionValue;
+
+  // energy loss function : ENTROPY, QUADRATIC
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_LOSS");
+  OptionValue_char = OptionValue.c_str();
+  nb->NB_DEF_LOSS(OptionValue_char);
+  outputname += "_LOSS" + OptionValue;
+
+  // include distance between the purity and the diagonal
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_LEARNDIAG");
+  OptionValue_int = atoi(OptionValue.c_str());
+  nb->NB_DEF_LEARNDIAG(OptionValue_int);
+  outputname += "_LEARN" + OptionValue;
+
+  // weight update after n events
+  //nb->NB_DEF_EPOCH(200); 
+
+  // multiplicative factor to enhance global learning speed
+  //  OptionValue = readStringOptionFromFile(optionFile, "DEF_SPEED");
+  //  ERICA::FIXME the funcion stof does not work.
+  //  OptionValue_float = stof(OptionValue);
+  nb->NB_DEF_SPEED(1.0);
+  outputname += "_SPEED1.0";
+
+  // number of training iteration
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_ITER");
+  OptionValue_int = atoi(OptionValue.c_str());
+  nb->NB_DEF_ITER(OptionValue_int);
+  outputname += "_ITER" + OptionValue;
+
+  // regolarization scheme choosen : OFF, REG, ARD, ASR, ALL
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_REG");
+  OptionValue_char = OptionValue.c_str();
+  nb->NB_DEF_REG(OptionValue_char);
+  outputname += "_REG" + OptionValue;
+
+  // using or not the BFGS algo : BFGS, NOBFGS
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_METHOD");
+  OptionValue_char = OptionValue.c_str();
+  nb->NB_DEF_METHOD(OptionValue_char);
+  outputname += "_METH" + OptionValue;
+
+  // direct connections between input and output layer : OFF, INC, DIAG, MARGINAL 
+  OptionValue = readStringOptionFromFile(optionFile, "DEF_SHAPE");
+  OptionValue_char = OptionValue.c_str();
+  nb->NB_DEF_SHAPE(OptionValue_char);
+  outputname += "_SHAPE" + OptionValue;
+
+  return outputname;
+
+}
