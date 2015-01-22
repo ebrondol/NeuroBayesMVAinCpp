@@ -3,6 +3,12 @@ Instruction for NeuroBayes MVA
 Follow C/C++ Tutorial @ http://neurobayes.phi-t.de/index.php/tutorials/cc
 
 -----------------------------------------------------------
+Export libraries in .bashrc
+export NEUROBAYES=/afs/hephy.at/project/cms/neurobayes/3.16.0/x86_64-slc6-gcc44-opt
+export LD_LIBRARY_PATH=$NEUROBAYES/lib:$LD_LIBRARY_PATH
+export PATH=$NEUROBAYES/external:$PATHexport PATH=$NEUROBAYES/external:$PATH
+
+-----------------------------------------------------------
 First run - Basic setup :
 	doc/ contains all the documents needed for the analysis (in particular look @ HowToCpp.pdf and NeuroBayes-HowTo.pdf)
 	running the analysis tools with:
