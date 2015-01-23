@@ -31,15 +31,18 @@ void NeuroBayesAnalysis() {
   }
 
   float fom = 0.0;
+  bool rebin = false;
   for(unsigned int it = 0; it != Histograms.size(); it = it + 2){
 
     std::string HistoName = Histograms.at(it)->GetName();
     unsigned int name_end = HistoName.find(".nb_signal");
 
     std::string HistoNameSaved = "results/FoM_" + HistoName.substr(0, name_end ) + ".pdf";
-    fom = fom_plot(Histograms.at(it), Histograms.at(it+1), HistoNameSaved);
+    fom = fom_plot(Histograms.at(it), Histograms.at(it+1), HistoNameSaved, rebin);
+
+    rebin = true;
     HistoNameSaved = "results/FoM_" + HistoName.substr(0, name_end ) + "_rebin.pdf";
-    fom = fom_plot(Histograms.at(it), Histograms.at(it+1), HistoNameSaved, true);
+    fom = fom_plot(Histograms.at(it), Histograms.at(it+1), HistoNameSaved, rebin);
 
   }
 
