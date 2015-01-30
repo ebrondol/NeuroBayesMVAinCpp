@@ -62,6 +62,7 @@ class TAMS {
   void seth(TH1F *_h1, TH1F *_h2){ m_h1=_h1; m_h2=_h2; };
   void setsys(float _sys){ m_rsys=_sys; }
   void setbr(float _br){ m_breg=_br; }
+  float getbr(){ return m_breg; }
 
   float _any(float *m, int o){ if (m<0) this->calc(); if (o==0) return m[o]; else if (o==-1) return m[1]; else if (o==1) return m[2]; else return -1; };  //-err: -1; central: 0; +err: 1
   float ams(int o=0){ float *m_any=m_ams; return _any(m_any, o); }
@@ -151,7 +152,7 @@ class TAMS {
     m_h3->Draw("same");
     gPad->SetLogy();
     leg2->Draw();
-    fname.ReplaceAll(".","2.");
+    fname.ReplaceAll(".pdf","2.pdf");
     gPad->SaveAs(fname);
 
     cx->Close();
@@ -212,10 +213,10 @@ class TAMS {
 
   void rebin() {
     //    const float RELSTATMAX=0.5;
-    const float RELSTATMAX=0.50;
+    const float RELSTATMAX=0.60;
     //XX
     //    const float BINC=1.33;
-    const float BINC=1.1;
+    const float BINC=1.0;
 
     std::vector<float> bin_edge;
     std::vector<float> bin_s;
