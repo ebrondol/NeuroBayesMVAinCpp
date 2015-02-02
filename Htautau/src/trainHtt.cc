@@ -20,11 +20,28 @@ string outputDir = "results/";
 const int nXvalSamples=5;
 const int nXvalThisPart=1;
 */
-   
+  
+
+bool checkFileExistence(string FileName){
+  ifstream codegen(FileName.c_str(), ifstream::in);
+
+  if(!codegen.is_open()) {
+    cout << "PseudoCodegen-file " << FileName << " not found " << endl;
+    return false;
+  } else {
+    return true;
+  }
+  
+  return false;
+} 
+
 // ---------------------------------------------------------------
 void teacher(string varFile, string optionFile, string inputFile_sig, string inputFile_bkg) 
 {
 
+  if(!checkFileExistence(varFile) || !checkFileExistence(optionFile) ||
+     !checkFileExistence(inputFile_sig) || !checkFileExistence(inputFile_bkg) )  
+    return;
 
   std::cout << "=========================" << std::endl
             << "Start NeuroBayes Training" << std::endl
@@ -36,6 +53,7 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   map<string, int> VarProProFlagsMap;
   VarProProFlagsMap = readVarFile(varFile, false);
   string OptionValue;
+
 
   char** c_varnames;
   int nvar = VarProProFlagsMap.size();
@@ -65,16 +83,13 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   vector<TString> SignalFiles = readInputFile(inputFile_sig, false);
   vector<TString> BkgFiles = readInputFile(inputFile_bkg, false);
 
-  std::cout << "Input files:" << std::endl;
   TChain* ntu_sig = new TChain("TauCheck");
   for(unsigned int i = 0; i < SignalFiles.size(); i++){
     ntu_sig -> Add(SignalFiles.at(i));
-    std::cout << "\t" << SignalFiles.at(i) << " added at the Sig chain." << std::endl;
   }
   TChain* ntu_bkg = new TChain("TauCheck");
   for(unsigned int i = 0; i < BkgFiles.size(); i++){
     ntu_bkg -> Add(BkgFiles.at(i));
-    std::cout << "\t" << BkgFiles.at(i) << " added at the Bkg chain." << std::endl;
   }
 
   if( ntu_sig->GetEntries() == 0 || ntu_bkg->GetEntries() == 0 )
@@ -189,7 +204,7 @@ int main(int argc, char** argv) {
 
     if(argc==1){
       cout << "Running with default options files" << endl;
-      teacher("config/varFileList","config/optionList","config/inputFileList_Htt_train_sig","config/inputFileList_Htt_train_bkg");
+      teacher("config/varFileList","config/optionList2","config/inputFileList_Htt_train_sig","config/inputFileList_Htt_train_bkg");
     } else {
       cerr << "Number of arguments not correct." << endl;
       cerr << "You should give in input the following input files: " << endl;
@@ -197,6 +212,7 @@ int main(int argc, char** argv) {
       cerr << "\t options config file " << endl;
       cerr << "\t input data signal config file " << endl;
       cerr << "\t input data background config file " << endl;
+      return 0;
     }
 
   } else if (argc==5) {
@@ -210,5 +226,6 @@ int main(int argc, char** argv) {
 
   } 
 
+  return 0;
 
 }

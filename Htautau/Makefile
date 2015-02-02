@@ -39,7 +39,7 @@ src/%.o: src/%.cc
 	@$(CXX) $(CXXFLAGS) $(CXXOUT)$@ -c $<
 
 train%: src/train%.o  
-	@$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
+	@$(LD) $(LDFLAGS) $^ $(LIBS) -o $@ 
 	
 test: src/testHtt_all.cc	
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(ROOTLIBS) $(NBLIBS) -lNeuroBayesExpertCPP $(CXXOUT)$@  $<
