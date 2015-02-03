@@ -45,7 +45,7 @@ int main() {
   DEF_REG_options.push_back("OFF");
   DEF_REG_options.push_back("REG");
   DEF_REG_options.push_back("ARD");
-  DEF_REG_options.push_back("ARS");
+  DEF_REG_options.push_back("ASR");
   DEF_REG_options.push_back("ALL");
 
   vector<string> DEF_METHOD_options;

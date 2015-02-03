@@ -1124,6 +1124,62 @@ void correlations(TFile* f,int HbookMode,int histo_id=2000){
   return;
 }
 
+TPad* printOptionsTitle(TCanvas* canvas,bool isPdf, string options,
+                       const char* correlSigniFile,const char heading[] = NULL)
+{  
+  double shift = 0;
+  ifstream significanceList(correlSigniFile);
+  if(!significanceList)
+  { 
+    shift = 0.3;
+    significanceList.close();
+  }
+  
+  TPad *title =0;
+  if(isPdf)
+    title = new TPad("title", "title", 0.,0.8,0.99,0.99);
+  else
+    title = new TPad("title", "title", 0.,0.8,0.99,0.99);
+
+  title->Draw();
+  title->cd();
+  title->SetBorderSize(2);
+  title->SetFillColor(10);
+  title->SetFrameFillColor(0);
+
+  TLatex* logo = new TLatex(0.05,0.89,"File Name:");
+  logo->SetTextFont();
+  logo->SetTextSize(0.05);
+  logo->SetLineWidth(2);
+  logo->Draw();
+  TLine *line = new TLine(0.89,0.878,0.96,0.878);
+  line->SetLineColor(2);
+  line->SetLineWidth(3);
+  TLatex *   tex = new TLatex(0.05,0.81,options.c_str());
+  tex->SetTextFont();
+  tex->SetTextSize(0.06);
+  tex->SetLineWidth(2);
+  tex->Draw();
+  if(heading!=NULL) {
+    TPaveText* title_tpt= new TPaveText(0.2,0.89,0.8,1.0);
+    title_tpt->SetBorderSize(1);
+    title_tpt->SetFillColor(10);
+    title_tpt->AddText(heading);
+    title_tpt->Draw();
+  }
+  canvas->cd();
+  TPad* graphPad = 0;
+  if(isPdf)
+    graphPad = new TPad("Graphs","Graphs",0.,0.,1.,0.95);
+  else
+    graphPad = new TPad("Graphs","Graphs",0.,0.,1.,0.95);
+  graphPad->Draw();
+  graphPad->cd();
+  graphPad->SetFillColor(10);
+
+  return graphPad;
+}//void printOptionTitle
+
 TPad* printGlobalTitle(TCanvas* canvas,bool isPdf,
                        const char* correlSigniFile,const char heading[] = NULL)
 {
@@ -1800,6 +1856,8 @@ void analysis( string FileName = "teacherHistos.root",
     FileName=FileName2;
   }
 
+  string options = FileName;
+
   gROOT->SetStyle("Plain");
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
@@ -1875,7 +1933,8 @@ void analysis( string FileName = "teacherHistos.root",
   if (!zeroIterations)
   {
     if(!pdfOutput) canvas->Clear();
-    graphPad=printGlobalTitle(canvas,pdfOutput,correlSigniFile); 
+    //graphPad=printGlobalTitle(canvas,pdfOutput,correlSigniFile); 
+    graphPad=printOptionsTitle(canvas,pdfOutput,options,correlSigniFile); 
     plotErrors(f,HbookMode,pdfOutput,graphPad);
     canvas->Update();
     if(!pdfOutput) PSFile->NewPage();
@@ -2459,6 +2518,7 @@ void analysis( string FileName = "teacherHistos.root",
     graphPad->GetPad(1)->SetBottomMargin(0.25);
     graphPad->GetPad(1)->SetGridx();
     graphPad->GetPad(1)->SetGridy();
+    graphPad->GetPad(1)->SetLogy();
     if(verbose_analysis()) cout<<"distribsingle"<<endl;
     distribsingle5(hSig,hBG,i);
     // write the original values of this variable	  
@@ -2519,6 +2579,7 @@ void analysis( string FileName = "teacherHistos.root",
     graphPad->GetPad(3)->cd();
     graphPad->GetPad(3)->SetTopMargin(0.1);
     graphPad->GetPad(3)->SetGridx();
+    graphPad->GetPad(3)->SetLogy();
     graphPad->GetPad(3)->SetGridy();
     gStyle->SetOptStat("oun");
     ID1 = 1016000 + i+1;

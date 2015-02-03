@@ -40,8 +40,14 @@ Running the Expert - using the Expertise :
 
 
 
-
-
+Instructions:
+  g++ macros/CreateOptionsFile.cpp	#create options list
+  ./a.out
+  python macros/runTraining.py		#create a Job to run the trining with all the options
+  make trainHtt				#create executable to train the MVA
+  sh Job.sh				#run NeuroBayesMVA with all different options
+  python macros/producePlots.py		#produce analysis.pdf plots
+  ./test results/trainHtt_*expertise*   #create results/HttEvaluationsPlots.root 
 
 
 
