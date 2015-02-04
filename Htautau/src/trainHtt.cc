@@ -103,10 +103,13 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   float* InputArray = new float[nvar];
   int ivar = 0;
   for( std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
-    if( it->second > 10)
-      nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
     c_varnames[ivar] = new char[it->first.size()];
-    strcpy(c_varnames[ivar], it->first.c_str());
+    if( it->second != 0) {
+      nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
+      strcpy(c_varnames[ivar], it->first.c_str());
+    } else {
+      strcpy(c_varnames[ivar], "");
+    }
     ivar++;
   }
 
@@ -204,7 +207,7 @@ int main(int argc, char** argv) {
 
     if(argc==1){
       cout << "Running with default options files" << endl;
-      teacher("config/varFileList","config/optionList2","config/inputFileList_Htt_train_sig","config/inputFileList_Htt_train_bkg");
+      teacher("config/varFileList_Simon","config/optionList_Simon","config/inputFileList_Htt_train_sig","config/inputFileList_Htt_train_bkg");
     } else {
       cerr << "Number of arguments not correct." << endl;
       cerr << "You should give in input the following input files: " << endl;

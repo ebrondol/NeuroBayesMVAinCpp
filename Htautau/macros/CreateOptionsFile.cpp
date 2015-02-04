@@ -42,11 +42,11 @@ int main() {
   DEF_ITER_options.push_back("220");
 
   vector<string> DEF_REG_options;
-  DEF_REG_options.push_back("OFF");
-  DEF_REG_options.push_back("REG");
+  DEF_REG_options.push_back("ALL");
   DEF_REG_options.push_back("ARD");
   DEF_REG_options.push_back("ASR");
-  DEF_REG_options.push_back("ALL");
+  DEF_REG_options.push_back("OFF");
+  DEF_REG_options.push_back("REG");
 
   vector<string> DEF_METHOD_options;
   DEF_METHOD_options.push_back("BFGS");

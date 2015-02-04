@@ -9,7 +9,7 @@ print currentDir;
 
 
 executable = "./trainHtt "
-varFile = "config/varFileList "
+varFile = "config/varFileList_Simon "
 inputFile_sig = "config/inputFileList_Htt_train_sig "
 inputFile_bkg = "config/inputFileList_Htt_train_bkg "
 
