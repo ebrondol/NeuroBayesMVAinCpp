@@ -49,7 +49,13 @@ My own MVA - instructions:
   sh Job.sh >& out.txt &		#run with all different options
   python macros/producePlots.py		#produce analysis.pdf plots
   ./test results/trainHtt_*expertise*   #create results/HttEvaluationsPlots.root 
+  root macros/NeuroBayesAnalysis.C	#compute the fom and give output the best one
 
+ToDo:
+- understand the preproflag problem
+- not just taken the max value of the map but also sort it
+- add rebin part
+- is it the fom correct estimator?
 
 
 

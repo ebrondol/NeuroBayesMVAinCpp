@@ -108,6 +108,7 @@ int main() {
     }
   }
 
+  summary.close();
   cout << "Option file lists in config/options directory."<<endl;
 
   return 0;

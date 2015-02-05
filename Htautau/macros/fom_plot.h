@@ -19,18 +19,18 @@ float fom_plot(TH1F* histo1,TH1F* histo2, std::string plotname = "results/FoMplo
 
   float fom;
   float sys = 0.2; // systematic error
-  TAMS ta (histo1, histo2, sys);
-  if(rebin)  ta.rebinEqui();
-  if(useMinbr) ta.setbr(1e-6);
-  std::cout << "The br used is: " << ta.getbr() << std::endl;
-  ta.calc();
-  fom = ta.ams_syst_stat();
+  TAMS* ta = new TAMS (histo1, histo2, sys);
+  if(rebin)  ta->rebinEqui();
+  if(useMinbr) ta->setbr(1e-6);
+  ta->calc();
+  fom = ta->ams_syst_stat();
 
   std::cout << "The Figure of Merit is: " << fom << std::endl;
 
 //  string filename(plotname);
-  ta.savePlot( plotname );
+  ta->savePlot( plotname );
 
+  delete ta;
   return fom;
 
 }
