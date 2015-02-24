@@ -53,7 +53,6 @@ My own MVA - instructions:
 
 ToDo:
 - understand the preproflag problem
-- not just taken the max value of the map but also sort it
 - add rebin part
 - is it the fom correct estimator?
 

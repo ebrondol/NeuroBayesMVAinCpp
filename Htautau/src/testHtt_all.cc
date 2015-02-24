@@ -138,5 +138,6 @@ int main (int argc, char** argv) {
   output.Write();
   output.Close();
 
+  cout << "Results in results/HttEvaluationsPlots.root " << endl;
 }
 

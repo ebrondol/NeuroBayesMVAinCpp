@@ -36,7 +36,7 @@ bool checkFileExistence(string FileName){
 } 
 
 // ---------------------------------------------------------------
-void teacher(string varFile, string optionFile, string inputFile_sig, string inputFile_bkg) 
+void teacher(string varFile, string optionFile, string inputFile_sig, string inputFile_bkg, bool usingSimonConf = false) 
 {
 
   if(!checkFileExistence(varFile) || !checkFileExistence(optionFile) ||
@@ -65,7 +65,7 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   nb->NB_DEF_NODE3(1);     	// nodes in output layer
 
   string output = outputDir +  "trainHtt" + DefineNBFeatures(nb, optionFile);
-
+  if(usingSimonConf) output += "_Simon"; 
   //-----
   //Setting the Expertise File
   string ExpertiseFile = output + "_expertise.nb";
@@ -207,7 +207,8 @@ int main(int argc, char** argv) {
 
     if(argc==1){
       cout << "Running with default options files" << endl;
-      teacher("config/varFileList_Simon","config/optionList_Simon","config/inputFileList_Htt_train_sig","config/inputFileList_Htt_train_bkg");
+      cout << "config/varFileList_Simon, config/optionList_Simon, config/inputFileList_Htt_train_sig_Simon, config/inputFileList_Htt_train_bkg" << endl;
+      teacher("config/varFileList_Simon","config/optionList_Simon","config/inputFileList_Htt_train_sig_Simon","config/inputFileList_Htt_train_bkg",1);
     } else {
       cerr << "Number of arguments not correct." << endl;
       cerr << "You should give in input the following input files: " << endl;
