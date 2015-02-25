@@ -100,10 +100,10 @@ class TAMS {
 
     std::cout << std::scientific;
     //34.8353 --  1423.2 events after presel, s / b
-    for (int i=1; i<=m_h1s->GetNbinsX(); i++){
+//    for (int i=1; i<=m_h1s->GetNbinsX(); i++){
       //      std::cout << "Bin " << i << "\t" << m_h1s->GetBinContent(i)/34.8353 << "\t" << m_h2s->GetBinContent(i)/1423.2  << std::endl;
-      std::cout << "Bin " << i << "\t" << m_h1s->GetBinContent(i)/m_h2s->GetBinContent(i)  << std::endl;
-    }
+//      std::cout << "Bin " << i << "\t" << m_h1s->GetBinContent(i)/m_h2s->GetBinContent(i)  << std::endl;
+//    }
 
     gStyle->SetOptStat(0);
     m_h2s->SetXTitle("BDT score");

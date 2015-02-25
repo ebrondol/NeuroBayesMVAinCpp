@@ -53,9 +53,8 @@ My own MVA - instructions:
 
 ToDo:
 - understand the preproflag problem
-- add rebin part
 - is it the fom correct estimator?
-
+- capisci dove perdo file e quali
 
 
 

@@ -30,7 +30,7 @@ void cleaningDirectory(){
 
 }
 
-void NeuroBayesAnalysis(int maxEntries = 0, string outputName = "results/HttEvaluationsPlots.root" ) {
+void NeuroBayesAnalysis(int maxEntries = 0, string outputName = "results/HttEvaluationsPlots.root", bool sortRebin = true ) {
 
   gROOT->SetBatch();
 
@@ -48,6 +48,7 @@ void NeuroBayesAnalysis(int maxEntries = 0, string outputName = "results/HttEval
 
   vector<TH1F*> Histograms;
   map<string,double> HistoFom;
+  map<string,double> HistoFom_rebin;
 
   for (int ientry = 0; ientry < nHistos; ientry++) {
 
@@ -61,34 +62,42 @@ void NeuroBayesAnalysis(int maxEntries = 0, string outputName = "results/HttEval
   // Computing the fom
   float fom = 0.0;
   float fom_rebin = 0.0;
-  bool rebin = false;
   bool useMinrb = false;
+  int zeroFomEvents = 0;
 
   for(unsigned int it = 0; it != Histograms.size(); it = it + 2){
 
+    bool rebin = false;
     std::string HistoName = Histograms.at(it)->GetName();
     unsigned int name_end = HistoName.find(".nb_signal");
 
     std::string HistoNameSaved = "results/FoM_" + HistoName.substr(0, name_end ) + ".pdf";
     fom = fom_plot(Histograms.at(it), Histograms.at(it+1), HistoNameSaved, rebin, useMinrb);
-
     cleaningDirectory();
+
+    if(fom == 0.0){ 
+      zeroFomEvents++;
+      continue;
+    }
+
 
     rebin = true;
     HistoNameSaved = "results/FoM_" + HistoName.substr(0, name_end ) + "_rebin.pdf";
     fom_rebin = fom_plot(Histograms.at(it), Histograms.at(it+1), HistoNameSaved, rebin, useMinrb);
-
-    HistoFom[HistoName.substr(0, name_end )] = fom;
-
     cleaningDirectory();
 
+    HistoFom[HistoName.substr(0, name_end )] = fom;
+    HistoFom_rebin[HistoName.substr(0, name_end )] = fom_rebin;
   }
 
   HistoSourceFile->Close();
 
   // -----
   // Sorting and printing the max
-  sorting(HistoFom);
+  if(sortRebin==false) sorting(HistoFom);
+  if(sortRebin==true)  sorting(HistoFom_rebin);
 
+  cout << "Number of events: " << HistoFom.size() << endl;
+  cout << "Number of zero fom events: " << zeroFomEvents << endl;
   return;
 }

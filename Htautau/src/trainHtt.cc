@@ -163,7 +163,7 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
     int ientry = ntu_bkg->GetEntry(ievent);
     if(ientry > 0){
       nb->SetWeight(lumi*weight*split);
-      nb->SetTarget(0.0);
+      nb->SetTarget(-1.0);
       bkgCount++;
       nb->SetNextInput(nvar,InputArray);
     } else {

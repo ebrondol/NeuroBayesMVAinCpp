@@ -5,6 +5,8 @@
 #include <vector>
 #include <cstdlib>
 
+#include "NeuroBayesTeacher.hh"
+
 using namespace std;
 
 void ReadMap(std::map<string,int> mymap){
@@ -203,3 +205,4 @@ string DefineNBFeatures(NeuroBayesTeacher* nb, string optionFile){
   return outputname;
 
 }
+

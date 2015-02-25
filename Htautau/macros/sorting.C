@@ -27,9 +27,9 @@ void sorting(map<string, double> d)
         sort_map sm;
 
 	ofstream fom_summary ("results/fom_summary.txt");
-	fom_summary << "Name\t\t|FoM not rebinned\t\t" <<endl;
+	fom_summary << "Name\t\t|FoM rebinned\t\t" <<endl;
 	ofstream fom_sorted ("results/fom_sorted.txt");
-	fom_sorted << "Name\t\t|FoM not rebinned\t\t" <<endl;
+	fom_sorted << "Name\t\t|FoM rebinned\t\t" <<endl;
 
         for (it = d.begin(); it != d.end(); ++it)
         {

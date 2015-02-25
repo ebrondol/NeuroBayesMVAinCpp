@@ -42,7 +42,7 @@ train%: src/train%.o
 	@$(LD) $(LDFLAGS) $^ $(LIBS) -o $@ 
 	
 test: src/testHtt_all.cc	
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(ROOTLIBS) $(NBLIBS) -lNeuroBayesExpertCPP $(CXXOUT)$@  $<
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(ROOTLIBS) $(NBLIBS) $(LIBS) -lNeuroBayesExpertCPP $(CXXOUT)$@  $<
 
 totalyclean:
 	rm -rf train1_expertise.nb train2_expertise.nb train2_iter_expertise.nb rescue.nb teacherHistos.root
