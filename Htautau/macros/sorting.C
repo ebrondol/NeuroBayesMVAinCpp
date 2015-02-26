@@ -9,53 +9,59 @@ using namespace std;
 
 class sort_map
 {
-  public:
-        string key;
-        double val;
+ public:
+  string key;
+  double val;
 };
 
 bool Sort_by(const sort_map& a ,const sort_map& b)
 {
-        return a.val > b.val;
+  return a.val > b.val;
 }
 
-void sorting(map<string, double> d)
+void fom_sorting(map<string, double> d, bool rebin)
 {
-        map<string,double>::iterator it;
-        vector< sort_map > v;
-        vector< sort_map >::iterator itv;
-        sort_map sm;
+  map<string,double>::iterator it;
+  vector< sort_map > v;
+  vector< sort_map >::iterator itv;
+  sort_map sm;
 
-	ofstream fom_summary ("results/fom_summary.txt");
-	fom_summary << "Name\t\t|FoM rebinned\t\t" <<endl;
-	ofstream fom_sorted ("results/fom_sorted.txt");
-	fom_sorted << "Name\t\t|FoM rebinned\t\t" <<endl;
+  //ofstream fom_summary ("results/fom_summary.txt");
+  //fom_summary << "Name\t\t|FoM rebinned\t\t" <<endl;
 
-        for (it = d.begin(); it != d.end(); ++it)
-        {
-                sm.key = (*it).first; sm.val = (*it).second;
-                v.push_back(sm);
-        }
+  if(!rebin){
+    ofstream fom_sorted ("results/fom_sorted_norebin.txt");
+    fom_sorted << "Name\t\t|FoM NOT rebinned\t\t" <<endl;
+  } else {
+    ofstream fom_sorted ("results/fom_sorted_rebin.txt");
+    fom_sorted << "Name\t\t|FoM rebinned\t\t" <<endl;
+  }
 
-        for (itv = v.begin(); itv != v.end(); ++itv)
-        {
-                fom_summary << (*itv).key << " | " << (*itv).val << endl;
-        }
+  for (it = d.begin(); it != d.end(); ++it)
+  {
+    sm.key = (*it).first; sm.val = (*it).second;
+    v.push_back(sm);
+  }
 
-        sort(v.begin(),v.end(),Sort_by);
+  //for (itv = v.begin(); itv != v.end(); ++itv)
+  //{
+  //  fom_summary << (*itv).key << " | " << (*itv).val << endl;
+  //}
 
-        cout << "sorted" << endl;
+  sort(v.begin(),v.end(),Sort_by);
 
-        for (itv = v.begin(); itv != v.end(); ++itv)
-        {
-            fom_sorted << (*itv).key << " | " << (*itv).val << endl;
-        }
+  cout << "sorted" << endl;
 
-        fom_summary.close();
-        fom_sorted.close();
+  for (itv = v.begin(); itv != v.end(); ++itv)
+  {
+    fom_sorted << (*itv).key << " | " << (*itv).val << endl;
+  }
 
-	cout << "-----------------------" << endl;
-	cout << "FoM max: " << (*(v.begin())).val << " in " << (*(v.begin())).key<< endl;
-        return;
+  //fom_summary.close();
+  fom_sorted.close();
+
+  cout << "-----------------------" << endl;
+  cout << "FoM max: " << (*(v.begin())).val << " in " << (*(v.begin())).key<< endl;
+  return;
 
 }

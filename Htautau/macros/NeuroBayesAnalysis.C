@@ -30,13 +30,13 @@ void cleaningDirectory(){
 
 }
 
-void NeuroBayesAnalysis(int maxEntries = 0, string outputName = "results/HttEvaluationsPlots.root", bool sortRebin = true ) {
+void NeuroBayesAnalysis(int maxEntries = 0, string outputName = "results/HttEvaluationsPlots.root") {
 
   gROOT->SetBatch();
 
   gROOT->LoadMacro("TAMS/TAMS.h+");
   gROOT->LoadMacro("macros/fom_plot.h+");
-  gROOT->LoadMacro("macros/sorting.C+");
+  gROOT->LoadMacro("macros/fom_sorting.C+");
 
   // -----
   // Getting the histos
@@ -94,8 +94,8 @@ void NeuroBayesAnalysis(int maxEntries = 0, string outputName = "results/HttEval
 
   // -----
   // Sorting and printing the max
-  if(sortRebin==false) sorting(HistoFom);
-  if(sortRebin==true)  sorting(HistoFom_rebin);
+  fom_sorting(HistoFom,false);
+  fom_sorting(HistoFom_rebin,true);
 
   cout << "Number of events: " << HistoFom.size() << endl;
   cout << "Number of zero fom events: " << zeroFomEvents << endl;

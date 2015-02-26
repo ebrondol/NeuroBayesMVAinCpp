@@ -54,7 +54,6 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   VarProProFlagsMap = readVarFile(varFile, false);
   string OptionValue;
 
-
   char** c_varnames;
   int nvar = VarProProFlagsMap.size();
 
@@ -66,6 +65,7 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
 
   string output = outputDir +  "trainHtt" + DefineNBFeatures(nb, optionFile);
   if(usingSimonConf) output += "_Simon"; 
+
   //-----
   //Setting the Expertise File
   string ExpertiseFile = output + "_expertise.nb";
@@ -99,20 +99,6 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   }
 
 
-  c_varnames = new char*[nvar];
-  float* InputArray = new float[nvar];
-  int ivar = 0;
-  for( std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
-    c_varnames[ivar] = new char[it->first.size()];
-    if( it->second != 0) {
-      nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
-      strcpy(c_varnames[ivar], it->first.c_str());
-    } else {
-      strcpy(c_varnames[ivar], "");
-    }
-    ivar++;
-  }
-
   //----
   //Reading Events
   cout << "Reading Events:" << endl;
@@ -121,11 +107,25 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   float weight = 0.0;
   float split = 0.0;
 
+  //single variables var
+  c_varnames = new char*[nvar];
+  float* InputArray = new float[nvar];
 
   //sig events
-  ivar = 0;
+  int ivar = 0;
   for(std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
     ntu_sig->SetBranchAddress(it->first.c_str(), &InputArray[ivar]);
+
+    if( it->second > 10){
+      nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
+//      preProflagExistence = true;
+    } else {
+      unsigned int preproGlobal = output.find("_PRE");
+      int preproFlagfixed = atoi(output.substr(preproGlobal+5, 2).c_str());
+      nb->SetIndividualPreproFlag(ivar,preproFlagfixed,it->first.c_str());
+    }
+    c_varnames[ivar] = new char[it->first.size()];
+    strcpy(c_varnames[ivar], it->first.c_str());
     ivar++;
   }
   ntu_sig->SetBranchAddress("lumiWeight", &lumi);
@@ -152,6 +152,7 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   ivar = 0;
   for(std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
     ntu_bkg->SetBranchAddress(it->first.c_str(), &InputArray[ivar]);
+    if( it->second != 0) nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
     ivar++;
   }
   ntu_bkg->SetBranchAddress("lumiWeight", &lumi);
@@ -207,8 +208,8 @@ int main(int argc, char** argv) {
 
     if(argc==1){
       cout << "Running with default options files" << endl;
-      cout << "config/varFileList_Simon, config/optionList_Simon, config/inputFileList_Htt_train_sig_Simon, config/inputFileList_Htt_train_bkg" << endl;
-      teacher("config/varFileList_Simon","config/optionList_Simon","config/inputFileList_Htt_train_sig_Simon","config/inputFileList_Htt_train_bkg",1);
+      cout << "config/varFileList_Simon, config/optionList_Simon, config/inputFileList_Htt_train_sig, config/inputFileList_Htt_train_bkg" << endl;
+      teacher("config/varFileList_Simon","config/optionList_Simon","config/inputFileList_Htt_train_sig","config/inputFileList_Htt_train_bkg",1);
     } else {
       cerr << "Number of arguments not correct." << endl;
       cerr << "You should give in input the following input files: " << endl;

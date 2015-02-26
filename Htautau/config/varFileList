@@ -1,10 +1,10 @@
 STARTVARSET
-svfit_mass 12
-jdeta 12
-pt_tot 12
-met_centrality 12
-lep_etacentrality 12
-pt_sum 12 
-mvis 12
+svfit_mass 0
+jdeta 0
+pt_tot 0
+met_centrality 0
+lep_etacentrality 0
+pt_sum 0 
+mvis 0
 ENDVARSET
 NETWORK classify 1

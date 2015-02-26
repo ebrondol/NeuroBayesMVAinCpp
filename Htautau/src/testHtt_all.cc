@@ -138,6 +138,7 @@ int main (int argc, char** argv) {
   output.Write();
   output.Close();
 
+  cout << "Number of expertise files founded: " << ExpertiseFiles.size() << endl;
   cout << "Results in results/HttEvaluationsPlots.root " << endl;
 }
 

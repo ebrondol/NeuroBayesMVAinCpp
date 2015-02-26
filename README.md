@@ -52,9 +52,9 @@ My own MVA - instructions:
   root macros/NeuroBayesAnalysis.C	#compute the fom and give output the best one
 
 ToDo:
-- understand the preproflag problem
 - is it the fom correct estimator?
 - capisci dove perdo file e quali
+- usa tutte le variabili, non solo 3 sigma
 
 
 
