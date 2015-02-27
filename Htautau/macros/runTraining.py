@@ -9,11 +9,13 @@ print currentDir;
 
 
 executable = "./trainHtt "
-varFile = "config/varFileList_Simon "
+#varFile = "config/varFileList_Simon "
+varFile = "config/varFileList "
 inputFile_sig = "config/inputFileList_Htt_train_sig "
 inputFile_bkg = "config/inputFileList_Htt_train_bkg "
 
-outScript = open("Job.sh","w");
+#outScript = open("Job.sh","w");
+outScript = open("Job2.sh","w");
 outScript.write('#!/bin/bash');
 outScript.write("\n"+'cd '+currentDir);
 
@@ -22,9 +24,6 @@ for numberOptionsFile in range(1,730):
   outScript.write("\n"+executable+varFile+optionsFile+inputFile_sig+inputFile_bkg);
 
 print 'Closing out script';
-
-#command = "sh Job.sh"
-#os.system(command)
 
 elapsed = timeit.default_timer() - start_time
 print elapsed

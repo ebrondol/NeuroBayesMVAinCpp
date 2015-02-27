@@ -16,11 +16,6 @@
 using namespace std;
 
 string outputDir = "results/";
-/*
-const int nXvalSamples=5;
-const int nXvalThisPart=1;
-*/
-  
 
 bool checkFileExistence(string FileName){
   ifstream codegen(FileName.c_str(), ifstream::in);
@@ -59,8 +54,8 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
 
   NeuroBayesTeacher* nb = NeuroBayesTeacher::Instance();
 
-  nb->NB_DEF_NODE1(nvar+1);	// nodes in input layer
-  nb->NB_DEF_NODE2(nvar+2);	// nodes in hidden layer
+  nb->NB_DEF_NODE1(nvar);	// nodes in input layer
+  nb->NB_DEF_NODE2(nvar+1);	// nodes in hidden layer
   nb->NB_DEF_NODE3(1);     	// nodes in output layer
 
   string output = outputDir +  "trainHtt" + DefineNBFeatures(nb, optionFile);
@@ -74,7 +69,7 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
 
   //-----
   //Random seed number initialisation
-  int i= 4701;
+  int i=4701;
   int j=21;
   nb->NB_RANVIN(i,j,2);            //i has to be an odd number, the third argument is a debugging flag
 
@@ -118,7 +113,6 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
 
     if( it->second > 10){
       nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
-//      preProflagExistence = true;
     } else {
       unsigned int preproGlobal = output.find("_PRE");
       int preproFlagfixed = atoi(output.substr(preproGlobal+5, 2).c_str());
@@ -152,7 +146,13 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   ivar = 0;
   for(std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
     ntu_bkg->SetBranchAddress(it->first.c_str(), &InputArray[ivar]);
-    if( it->second != 0) nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
+    if( it->second > 10){
+      nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
+    } else {
+      unsigned int preproGlobal = output.find("_PRE");
+      int preproFlagfixed = atoi(output.substr(preproGlobal+5, 2).c_str());
+      nb->SetIndividualPreproFlag(ivar,preproFlagfixed,it->first.c_str());
+    }
     ivar++;
   }
   ntu_bkg->SetBranchAddress("lumiWeight", &lumi);

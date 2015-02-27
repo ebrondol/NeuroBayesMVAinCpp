@@ -48,10 +48,11 @@ My own MVA - instructions:
   make trainHtt				#create executable to train the MVA
   sh Job.sh >& out.txt &		#run with all different options
   python macros/producePlots.py		#produce analysis.pdf plots
-  ./test results/trainHtt_*expertise*   #create results/HttEvaluationsPlots.root 
-  root macros/NeuroBayesAnalysis.C	#compute the fom and give output the best one
+  ./test results/*expertise*   #create results/HttEvaluationsPlots.root 
+  root macros/NeuroBayesAnalysis.C	#compute and sort the fom 
 
 ToDo:
+- preproflag solo valido 12!
 - is it the fom correct estimator?
 - capisci dove perdo file e quali
 - usa tutte le variabili, non solo 3 sigma
