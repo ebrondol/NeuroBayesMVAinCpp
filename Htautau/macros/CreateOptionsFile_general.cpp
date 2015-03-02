@@ -11,6 +11,8 @@
 
 using namespace std;
 
+std::string summaryFileName = "config/optionsFileList_total.txt";
+
 template <typename T>
 string NumberToString ( T Number )
 {
@@ -56,7 +58,7 @@ int main() {
   DEF_SHAPE_options.push_back("INCL");
   DEF_SHAPE_options.push_back("OFF");
 
-  ofstream summary("config/optionsFileList_total.txt");
+  ofstream summary(summaryFileName.c_str());
 
   //ERICA::not proud of me
   for( vector<string>::iterator it = DEF_PRE_options.begin(); it != DEF_PRE_options.end(); ++it ) {

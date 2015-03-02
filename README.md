@@ -42,7 +42,7 @@ Running the Expert - using the Expertise :
 
 -----------------------------------------------------------
 My own MVA - instructions:
-  g++ macros/CreateOptionsFile.cpp	#create options list
+  g++ macros/CreateOptionsFile_general.cpp	#create options list
   ./a.out				#check in config/optionsFileList_total
   python macros/runTraining.py		#create a Job to run the training 
   make trainHtt				#create executable to train the MVA
@@ -57,7 +57,11 @@ ToDo:
 - capisci dove perdo file e quali
 - usa tutte le variabili, non solo 3 sigma
 
-
+Summary:
+Job.sh  -> first try
+Job2.sh -> global pre pro val fixed
+Job3.sh -> using different k in PreProFlag (1...9) with all variables (node+1)
+Job4.sh -> using different k in PreProFlag (1...9) with Simon variables
 
 -----------------------------------------------------------
 Questions:

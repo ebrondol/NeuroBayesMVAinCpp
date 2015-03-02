@@ -71,7 +71,7 @@ int main (int argc, char** argv) {
   }
 
   map<string, int> VarProProFlagsMap;
-  VarProProFlagsMap = readVarFile(varFile, false);
+  VarProProFlagsMap = readVarFile(varFile, true);
   int nvar = VarProProFlagsMap.size();
   float* InputArray = new float[nvar];
   int ivar = 0;

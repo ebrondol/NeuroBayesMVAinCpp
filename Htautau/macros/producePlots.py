@@ -1,7 +1,8 @@
 # macro to produce analysis.pdf for different options
 import os
 
-f = open('config/optionsFileList_total.txt')
+#f = open('config/optionsFileList_total.txt')
+f = open('config/optionsFileList_PreProFlag.txt')
 lines = f.readlines()
 f.close()
  

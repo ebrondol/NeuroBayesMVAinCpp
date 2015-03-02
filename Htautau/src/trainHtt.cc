@@ -47,15 +47,14 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   //Read Info from Congif Files && setting the NeuroBayesTeacher
   map<string, int> VarProProFlagsMap;
   VarProProFlagsMap = readVarFile(varFile, false);
-  string OptionValue;
 
   char** c_varnames;
   int nvar = VarProProFlagsMap.size();
 
   NeuroBayesTeacher* nb = NeuroBayesTeacher::Instance();
 
-  nb->NB_DEF_NODE1(nvar);	// nodes in input layer
-  nb->NB_DEF_NODE2(nvar+1);	// nodes in hidden layer
+  nb->NB_DEF_NODE1(nvar+1);	// nodes in input layer
+  nb->NB_DEF_NODE2(nvar+2);	// nodes in hidden layer
   nb->NB_DEF_NODE3(1);     	// nodes in output layer
 
   string output = outputDir +  "trainHtt" + DefineNBFeatures(nb, optionFile);
@@ -105,6 +104,7 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   //single variables var
   c_varnames = new char*[nvar];
   float* InputArray = new float[nvar];
+  //float* InputArray_Bkg = new float[nvar];
 
   //sig events
   int ivar = 0;

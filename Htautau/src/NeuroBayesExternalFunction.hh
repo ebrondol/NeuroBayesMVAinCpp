@@ -39,7 +39,6 @@ std::map<string, int> readVarFile(string ConfigFileName, bool debug = false){
 
   string buffer;
   getline(codegen,buffer); 		//STARTVARSET 
-  if(debug) cout << buffer << endl;
 
   while(true) {
 
@@ -60,6 +59,7 @@ std::map<string, int> readVarFile(string ConfigFileName, bool debug = false){
 
   }
     
+  if(debug) cout << "Reading Map(VarProProFlagsMap):" << endl;
   if(debug) ReadMap(VarProProFlagsMap);
 
   return VarProProFlagsMap;
