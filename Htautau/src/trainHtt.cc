@@ -75,13 +75,15 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   //-----
   //Setup DataTree
   TFile *input(0);
-  TString fname = "input/tauSignalAndBackground.root";
+  //TString fname = "input/tauSignalAndBackground.root";
+  TString fname = "input/Trainings_Data.root";
   if (!gSystem->AccessPathName( fname )) {
     std::cout << "--- NeuroBayesTeacher  : accessing " << fname << std::endl;
     input = TFile::Open( fname );
   }
 
-  TTree *InputTree = (TTree*)input->Get("TauCheck");
+  //TTree *InputTree = (TTree*)input->Get("TauCheck");
+  TTree *InputTree = (TTree*)input->Get("tree");
   if( InputTree->GetEntries() == 0 )
   {
     std::cout << "Error!! at least one file is empty" << std::endl;
@@ -89,15 +91,15 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   }
 
   float target = 2;
-  float lumi = 0.0;
+  InputTree->SetBranchAddress("target", &target);
+/*  float lumi = 0.0;
   float weight = 0.0;
   float split = 0.0;
 
-  InputTree->SetBranchAddress("target", &target);
   InputTree->SetBranchAddress("lumiWeight", &lumi);
   InputTree->SetBranchAddress("weight", &weight);
   InputTree->SetBranchAddress("splitFactor", &split);
-
+*/
   //single variables var
   c_varnames = new char*[nvar];
   float* InputArray = new float[nvar];
