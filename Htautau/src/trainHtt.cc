@@ -31,11 +31,10 @@ bool checkFileExistence(string FileName){
 } 
 
 // ---------------------------------------------------------------
-void teacher(string varFile, string optionFile, string inputFile_sig, string inputFile_bkg, bool usingSimonConf = false) 
+void teacher(string varFile, string optionFile, string inputFile, bool usingSimonConf = false) 
 {
 
-  if(!checkFileExistence(varFile) || !checkFileExistence(optionFile) ||
-     !checkFileExistence(inputFile_sig) || !checkFileExistence(inputFile_bkg) )  
+  if(!checkFileExistence(varFile) || !checkFileExistence(optionFile) || !checkFileExistence(inputFile) )  
     return;
 
   std::cout << "=========================" << std::endl
@@ -75,11 +74,11 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   //-----
   //Setup DataTree
   TFile *input(0);
-  TString fname = "input/tauSignalAndBackground.root";
+  //TString fname = "input/tauSignalAndBackground.root";
   //TString fname = "input/Trainings_Data.root";
-  if (!gSystem->AccessPathName( fname )) {
-    std::cout << "--- NeuroBayesTeacher  : accessing " << fname << std::endl;
-    input = TFile::Open( fname );
+  if (!gSystem->AccessPathName( inputFile.c_str() )) {
+    std::cout << "--- NeuroBayesTeacher  : accessing " << inputFile << std::endl;
+    input = TFile::Open( inputFile.c_str() );
   }
 
   TTree *InputTree = (TTree*)input->Get("TauCheck");
@@ -126,8 +125,8 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   for(int ievent=0; ievent< maxEvents; ievent++) {
     int ientry = InputTree->GetEntry(ievent);
     if(ientry > 0){
-      nb->SetWeight(lumi*weight*split);
-//      nb->SetWeight(1.0);
+      //nb->SetWeight(lumi*weight*split);
+      nb->SetWeight(1.0);
       if(target){
         nb->SetTarget(1.0);
         sigCount++; // event is a SIGNAL event
@@ -180,8 +179,8 @@ int main(int argc, char** argv) {
 
     if(argc==1){
       cout << "Running with default options files" << endl;
-      cout << "config/varFileList_Simon, config/optionList_Simon, config/inputFileList_Htt_train_sig, config/inputFileList_Htt_train_bkg" << endl;
-      teacher("config/varFileList_Simon","config/optionList_Simon","config/inputFileList_Htt_train_sig","config/inputFileList_Htt_train_bkg",1);
+      cout << "config/varFileList_Simon, config/optionList_Simon, input/tauSignalAndBackground.root" << endl;
+      teacher("config/varFileList_Simon","config/optionList_Simon","input/tauSignalAndBackground.root",1);
     } else {
       cerr << "Number of arguments not correct." << endl;
       cerr << "You should give in input the following input files: " << endl;
@@ -192,14 +191,13 @@ int main(int argc, char** argv) {
       return 0;
     }
 
-  } else if (argc==5) {
+  } else if (argc==4) {
 
     string varFile = argv[1];
     string optionFile = argv[2];
-    string inputFile_sig = argv[3];
-    string inputFile_bkg = argv[4];
+    string inputFile = argv[3];
 
-    teacher(varFile,optionFile,inputFile_sig,inputFile_bkg);
+    teacher(varFile,optionFile,inputFile);
 
   } 
 
