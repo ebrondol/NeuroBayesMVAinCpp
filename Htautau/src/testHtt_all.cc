@@ -101,6 +101,7 @@ int main (int argc, char** argv) {
       sigCount++;
       for(int iExpert=0; iExpert< nExpertises; iExpert++) {
         hists[2*iExpert]->Fill(NBExperts[iExpert]->nb_expert(InputArray), lumi*weight*split);
+        //hists[2*iExpert]->Fill(NBExperts[iExpert]->nb_expert(InputArray));
       }
     } else {
       std::cout << "Entry " << ientry << " does not exist" << std::endl;
@@ -127,6 +128,7 @@ int main (int argc, char** argv) {
       bkgCount++;
       for(int iExpert=0; iExpert< nExpertises; iExpert++) {
         hists[2*iExpert + 1]->Fill(NBExperts[iExpert]->nb_expert(InputArray), lumi*weight*split);
+        //hists[2*iExpert + 1]->Fill(NBExperts[iExpert]->nb_expert(InputArray));
       }
     } else {
       std::cout << "Entry " << ientry << " does not exist" << std::endl;
