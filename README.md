@@ -43,25 +43,30 @@ Running the Expert - using the Expertise :
 -----------------------------------------------------------
 My own MVA - instructions:
   g++ macros/CreateOptionsFile_general.cpp	#create options list
-  ./a.out				#check in config/optionsFileList_total
-  python macros/runTraining.py		#create a Job to run the training 
-  make trainHtt				#create executable to train the MVA
-  sh Job.sh >& out.txt &		#run with all different options
-  python macros/producePlots.py		#produce analysis.pdf plots
-  ./test results/*expertise*   #create results/HttEvaluationsPlots.root 
-  root macros/NeuroBayesAnalysis.C	#compute and sort the fom 
+  ./a.out					#check in config/optionsFileList_total
+  python macros/runTraining.py			#create a Job to run the training 
+  make trainHtt					#create executable to train the MVA
+  sh Job.sh >& out.txt &			#run with all different options
+  python macros/producePlots.py			#produce analysis.pdf plots
+  ./test results/*exper*			#create results/HttEvaluationsPlots.root 
+  root macros/NeuroBayesAnalysis.C		#compute and sort the fom 
+
+  #controllo files persi:
+  ll results/trainHtt_TASKCLA_PRE6*exp* | awk '{ print $9 > "results/expertisefile.txt"}'
 
 ToDo:
-- preproflag solo valido 12!
+- running on single preproflag
 - is it the fom correct estimator?
-- capisci dove perdo file e quali
+- capisci dove perdo file, perchè e quali
 - usa tutte le variabili, non solo 3 sigma
 
 Summary:
 Job.sh  -> first try
 Job2.sh -> global pre pro val fixed
 Job3.sh -> using different k in PreProFlag (1...9) with all variables (node+1)
-Job4.sh -> using different k in PreProFlag (1...9) with Simon variables
+Job4.sh -> using different k in PreProFlag (1...9) with reduced variables
+Job5.sh -> using different k in PreProFlag (1...9) with Simon preproflags
+Job6.sh -> using different k in PreProFlag (1...9) with Simon preproflags + SHAPE OFF config
 
 -----------------------------------------------------------
 Questions:

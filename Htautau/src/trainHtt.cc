@@ -46,7 +46,7 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
   //-----		
   //Read Info from Congif Files && setting the NeuroBayesTeacher
   map<string, int> VarProProFlagsMap;
-  VarProProFlagsMap = readVarFile(varFile, false);
+  VarProProFlagsMap = readVarFile(varFile, true);
 
   char** c_varnames;
   int nvar = VarProProFlagsMap.size();
@@ -74,44 +74,37 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
 
   //-----
   //Setup DataTree
-  vector<TString> SignalFiles = readInputFile(inputFile_sig, false);
-  vector<TString> BkgFiles = readInputFile(inputFile_bkg, false);
-
-  TChain* ntu_sig = new TChain("TauCheck");
-  for(unsigned int i = 0; i < SignalFiles.size(); i++){
-    ntu_sig -> Add(SignalFiles.at(i));
-  }
-  TChain* ntu_bkg = new TChain("TauCheck");
-  for(unsigned int i = 0; i < BkgFiles.size(); i++){
-    ntu_bkg -> Add(BkgFiles.at(i));
+  TFile *input(0);
+  TString fname = "input/tauSignalAndBackground.root";
+  if (!gSystem->AccessPathName( fname )) {
+    std::cout << "--- NeuroBayesTeacher  : accessing " << fname << std::endl;
+    input = TFile::Open( fname );
   }
 
-  if( ntu_sig->GetEntries() == 0 || ntu_bkg->GetEntries() == 0 )
+  TTree *InputTree = (TTree*)input->Get("TauCheck");
+  if( InputTree->GetEntries() == 0 )
   {
     std::cout << "Error!! at least one file is empty" << std::endl;
     return;
   }
 
-
-  //----
-  //Reading Events
-  cout << "Reading Events:" << endl;
-  int sigCount = 0, bkgCount=0;
+  float target = 2;
   float lumi = 0.0;
   float weight = 0.0;
   float split = 0.0;
 
+  InputTree->SetBranchAddress("target", &target);
+  InputTree->SetBranchAddress("lumiWeight", &lumi);
+  InputTree->SetBranchAddress("weight", &weight);
+  InputTree->SetBranchAddress("splitFactor", &split);
+
   //single variables var
   c_varnames = new char*[nvar];
   float* InputArray = new float[nvar];
-  //float* InputArray_Bkg = new float[nvar];
-
-  //sig events
   int ivar = 0;
   for(std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
-    ntu_sig->SetBranchAddress(it->first.c_str(), &InputArray[ivar]);
-
-    if( it->second > 10){
+    InputTree->SetBranchAddress(it->first.c_str(), &InputArray[ivar]);
+    if(it->second > 10) {
       nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
     } else {
       unsigned int preproGlobal = output.find("_PRE");
@@ -122,56 +115,33 @@ void teacher(string varFile, string optionFile, string inputFile_sig, string inp
     strcpy(c_varnames[ivar], it->first.c_str());
     ivar++;
   }
-  ntu_sig->SetBranchAddress("lumiWeight", &lumi);
-  ntu_sig->SetBranchAddress("weight", &weight);
-  ntu_sig->SetBranchAddress("splitFactor", &split);
 
-  int maxEvents = ntu_sig->GetEntries();
+
+  //sig&bkg events :: NOT DIVIDE
+  int sigCount = 0, bkgCount=0;
+  int maxEvents = InputTree->GetEntries();
+  cout << "\t Reading Events:" << maxEvents << endl;
   for(int ievent=0; ievent< maxEvents; ievent++) {
-    int ientry = ntu_sig->GetEntry(ievent);
+    int ientry = InputTree->GetEntry(ievent);
     if(ientry > 0){
-      nb->SetWeight(lumi*weight*split);
-      nb->SetTarget(1.0);
-      sigCount++;
+//      nb->SetWeight(lumi*weight*split);
+      nb->SetWeight(1.0);
+      if(target){
+        nb->SetTarget(1.0);
+        sigCount++; // event is a SIGNAL event
+      } else {
+        nb->SetTarget(-1.0);
+        bkgCount++; // event is a BKG event
+      }
       nb->SetNextInput(nvar,InputArray);
     } else {
       std::cout << "Entry " << ientry << " does not exist" << std::endl;
       continue;
     }
   }
+
+  cout << endl;
   cout << "\t #Signal \t " << sigCount << endl;
-
-
-  //bkg events
-  ivar = 0;
-  for(std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
-    ntu_bkg->SetBranchAddress(it->first.c_str(), &InputArray[ivar]);
-    if( it->second > 10){
-      nb->SetIndividualPreproFlag(ivar, it->second, it->first.c_str());
-    } else {
-      unsigned int preproGlobal = output.find("_PRE");
-      int preproFlagfixed = atoi(output.substr(preproGlobal+5, 2).c_str());
-      nb->SetIndividualPreproFlag(ivar,preproFlagfixed,it->first.c_str());
-    }
-    ivar++;
-  }
-  ntu_bkg->SetBranchAddress("lumiWeight", &lumi);
-  ntu_bkg->SetBranchAddress("weight", &weight);
-  ntu_bkg->SetBranchAddress("splitFactor", &split);
-
-  maxEvents = ntu_bkg->GetEntries();
-  for(int ievent=0; ievent< maxEvents; ievent++) {
-    int ientry = ntu_bkg->GetEntry(ievent);
-    if(ientry > 0){
-      nb->SetWeight(lumi*weight*split);
-      nb->SetTarget(-1.0);
-      bkgCount++;
-      nb->SetNextInput(nvar,InputArray);
-    } else {
-      std::cout << "Entry " << ientry << " does not exist" << std::endl;
-      continue;
-    }
-  }
   cout << "\t #Backgroud \t " << bkgCount << endl;
 
 
