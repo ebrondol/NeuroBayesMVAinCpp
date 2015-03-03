@@ -55,6 +55,11 @@ trainingdata:
 	@root -l -q data/gen_trainfiles.cc+
 	@mv Trainings_Data.root data
 
+trainingdata2: 
+	@root -l -q data/gen_trainfiles2.cc+
+	@mv Trainings_Data_sig.root data
+	@mv Trainings_Data_bkg.root data
+
 testdata: 
 	@root -l -q data/gen_trainfiles.cc+
 	@mv Trainings_Data.root data/testData.root

@@ -22,6 +22,7 @@ const int nXvalThisPart=1;
 void teacher(bool Iterate) 
 {
 
+	bool Htautau = true;
 
    	std::cout << "Start NeuroBayes Setup" << std::endl
         	<< "======================" << std::endl
@@ -31,6 +32,7 @@ void teacher(bool Iterate)
    	std::cout << "Reading Pseudocodegenfile in" << std::endl;
 
 	string codegenfile = "pseudocodegen";
+	if(Htautau)	codegenfile = "varFileList_Simon";
 	ifstream codegen(codegenfile.c_str(), ifstream::in);
 	if(codegen.bad()) {cout << "PseudoCodegen-file " << codegenfile << " not found " << endl;return;}
 	
@@ -68,11 +70,11 @@ void teacher(bool Iterate)
   	nb->NB_DEF_NODE2(nvar+2);      	// nodes in hidden layer
   	nb->NB_DEF_NODE3(1);       	// nodes in output layer
 
-  	//nb->NB_DEF_TASK("CLA");    // binominal classification (default)
+  	nb->NB_DEF_TASK("CLA");    // binominal classification (default)
 
   	nb->NB_DEF_PRE(612);
   	nb->NB_DEF_REG("REG");           // 'OFF','REG' (def) ,'ARD','ASR','ALL'
-  	//nb->NB_DEF_LOSS("ENTROPY");      // 'ENTROPY'(def),'QUADRATIC'
+  	nb->NB_DEF_LOSS("ENTROPY");      // 'ENTROPY'(def),'QUADRATIC'
 
   	nb->NB_DEF_LEARNDIAG( 1 );	   // BFGS
 
@@ -87,11 +89,11 @@ void teacher(bool Iterate)
   		nb->NB_DEF_ITER(100);            // number of training iteration
   		nb->NB_DEF_METHOD("BFGS");	   // bricht automatisch ab, wenn austrainiert
   		nb->NB_DEF_PRE(612);
+  	//	nb->NB_DEF_SHAPE("DIAG");        // 'OFF', 'INCL', 'TOTL'
 		sprintf(ExpertiseFile,"results/train2_iter_expertise.nb");
 	}
 	else {
   		nb->NB_DEF_ITER(0);            // number of training iteration
-  		nb->NB_DEF_SHAPE("DIAG");        // 'OFF', 'INCL', 'TOTL'
   		nb->NB_DEF_PRE(622);
 		sprintf(ExpertiseFile,"results/train2_expertise.nb");
 	}
@@ -107,16 +109,28 @@ void teacher(bool Iterate)
 	//Setup DataTree
 	TFile *input(0);
       	TString fname = "data/Trainings_Data.root";
+      	if(Htautau)	fname = "data/tauSignalAndBackground.root";
       	if (!gSystem->AccessPathName( fname )) {
          	std::cout << "--- NeuroBayesTeacher  : accessing " << fname << std::endl;
          	input = TFile::Open( fname );
       	}
 
-      	TTree *InputTree     = (TTree*)input->Get("tree");
+	string nameTree = "tree";
+	if(Htautau)	nameTree = "TauCheck";
+      	TTree *InputTree = (TTree*)input->Get(nameTree.c_str());
 	cout << "Tree accessed" << endl;
 
-	float target;
+	float target = 2;
 	InputTree->SetBranchAddress("target", &target);
+
+	float lumi = 1.0;
+	float weight = 0.0;
+	float split = 0.0;
+	if(Htautau){
+	  InputTree->SetBranchAddress("lumiWeight", &lumi);
+	  InputTree->SetBranchAddress("weight", &weight);
+	  InputTree->SetBranchAddress("splitFactor", &split);
+	}
 	
 	c_varnames = new char*[nvar];
 	float* InputArray = new float[nvar];
@@ -132,9 +146,10 @@ void teacher(bool Iterate)
 	int maxEvents = InputTree->GetEntries();
 	for(int ievent=0; ievent< maxEvents; ievent++) {
 		int ientry = InputTree->GetEntry(ievent);
-		nb->SetWeight(1.0);  //set weight of event
-		if(target) nb->SetTarget(1.0), sigCount++; // event is a BACKGROUND event
-		else  nb->SetTarget(-1.0), bkgCount++; // event is a SIGNAL event
+		if(Htautau){	nb->SetWeight(lumi*weight*split);}
+		else{ 		nb->SetWeight(1.0); } //set weight of event
+		if(target) nb->SetTarget(1.0), sigCount++; // event is a SIGNAL event
+		else  nb->SetTarget(-1.0), bkgCount++; // event is a BKG event
 		nb->SetNextInput(nvar,InputArray);
 	}
 	cout << endl;
