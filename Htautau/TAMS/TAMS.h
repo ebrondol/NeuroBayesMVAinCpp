@@ -212,11 +212,11 @@ class TAMS {
   }
 
   void rebin() {
-    //    const float RELSTATMAX=0.5;
-    const float RELSTATMAX=0.60;
+    const float RELSTATMAX=0.5;
+    //const float RELSTATMAX=0.60;
     //XX
-    //    const float BINC=1.33;
-    const float BINC=1.0;
+    const float BINC=1.33;
+    //const float BINC=1.0;
 
     std::vector<float> bin_edge;
     std::vector<float> bin_s;

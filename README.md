@@ -53,20 +53,23 @@ My own MVA - instructions:
 
   #controllo files persi:
   ll results/trainHtt_TASKCLA_PRE6*exp* | awk '{ print $9 > "results/expertisefile.txt"}'
+  ls results/FoM*pdf | awk '{ gsub(/.pdf/, ""); print "mv " $1 ".pdf " $1 "_testwithweights.pdf" }'
 
 ToDo:
-- running on single preproflag
 - is it the fom correct estimator?
 - capisci dove perdo file, perchè e quali
 - usa tutte le variabili, non solo 3 sigma
 
 Summary:
-Job.sh  -> first try
-Job2.sh -> global pre pro val fixed
-Job3.sh -> using different k in PreProFlag (1...9) with all variables (node+1)
-Job4.sh -> using different k in PreProFlag (1...9) with reduced variables
-Job5.sh -> using different k in PreProFlag (1...9) with Simon preproflags
-Job6.sh -> using different k in PreProFlag (1...9) with Simon preproflags + SHAPE OFF config
+1) Job.sh  -> first try
+2) Job2.sh -> global pre pro val fixed
+3) Job3.sh -> using different k in PreProFlag (1...9) with all variables (node+1)
+3) Job4.sh -> using different k in PreProFlag (1...9) with reduced variables
+3) Job5.sh -> using different k in PreProFlag (1...9) with Simon preproflags
+3) Job6.sh -> using different k in PreProFlag (1...9) with Simon preproflags + SHAPE OFF config
+4)         -> prova no weights in training 
+4) Job7.sh -> no weights in training (using varFileListSimon + different options + PreProFlag (1...9) )
+ TODO :::: Job8.sh -> no weights in training (using varFileList + different options + PreProFlag (1...9) )
 
 -----------------------------------------------------------
 Questions:

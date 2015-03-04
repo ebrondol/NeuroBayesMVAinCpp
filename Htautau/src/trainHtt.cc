@@ -175,7 +175,7 @@ void teacher(string varFile, string optionFile, string inputFile, bool usingSimo
 int main(int argc, char** argv) {
 
 
-  if(argc<5 || argc>5) {
+  if(argc<4 || argc>4) {
 
     if(argc==1){
       cout << "Running with default options files" << endl;
