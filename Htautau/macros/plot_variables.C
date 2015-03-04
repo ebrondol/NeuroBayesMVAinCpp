@@ -135,14 +135,14 @@ void plot_variables ( std::string varFile = "config/varFileList_complete", bool 
   BkgFiles.push_back(dir+"train_mvain_mu_sync_dy2j_0.root");
   BkgFiles.push_back(dir+"train_mvain_mu_sync_dy3j_0.root");
   BkgFiles.push_back(dir+"train_mvain_mu_sync_dy4j_0.root");
-  
+
   //test files
- // SignalFiles.push_back(dir+"test_mvain_mu_sync_vbfhiggs_0.root");
- // SignalFiles.push_back(dir+"test_mvain_mu_sync_ggfhiggs_0.root");
- // BkgFiles.push_back(dir+"test_mvain_mu_sync_dy1j_0.root");
- // BkgFiles.push_back(dir+"test_mvain_mu_sync_dy2j_0.root");
- // BkgFiles.push_back(dir+"test_mvain_mu_sync_dy3j_0.root");
- // BkgFiles.push_back(dir+"test_mvain_mu_sync_dy4j_0.root");
+//  SignalFiles.push_back(dir+"test_mvain_mu_sync_vbfhiggs_0.root");
+//  SignalFiles.push_back(dir+"test_mvain_mu_sync_ggfhiggs_0.root");
+//  BkgFiles.push_back(dir+"test_mvain_mu_sync_dy1j_0.root");
+//  BkgFiles.push_back(dir+"test_mvain_mu_sync_dy2j_0.root");
+//  BkgFiles.push_back(dir+"test_mvain_mu_sync_dy3j_0.root");
+//  BkgFiles.push_back(dir+"test_mvain_mu_sync_dy4j_0.root");
 
   std::cout << "Input files:" << std::endl;
   TChain* ntu_Sig = new TChain("TauCheck");
@@ -210,11 +210,11 @@ void plot_variables ( std::string varFile = "config/varFileList_complete", bool 
 
   category = "weight";
   std::string histoName = "h_Sig_"+category;
-  h_Sig[category] = new TH1F(histoName.c_str(),"", 100, 0, 1);
+  h_Sig[category] = new TH1F(histoName.c_str(),"", 100, 0, 0.5);
   h_Sig[category] -> Sumw2();
 
   histoName = "h_Bkg_"+category;
-  h_Bkg[category] = new TH1F(histoName.c_str(),"", 100, 0, 1);
+  h_Bkg[category] = new TH1F(histoName.c_str(),"", 100, 0, 0.5);
   h_Bkg[category] -> Sumw2();
 
   //Filling histos
@@ -248,6 +248,7 @@ void plot_variables ( std::string varFile = "config/varFileList_complete", bool 
   {
     ntu_Sig -> GetEntry(ientry);
     sig_ASCII << lumi*weight*split << " , ";
+    h_Sig["weight"] -> Fill(lumi*weight*split);
   }
   sig_ASCII << endl;
   sig_ASCII.close();
@@ -270,10 +271,11 @@ void plot_variables ( std::string varFile = "config/varFileList_complete", bool 
   }
 
   bkg_ASCII << "tot_weight" << endl;
-  for(int ientry = 0; ientry < nEntries_Sig; ++ientry)
+  for(int ientry = 0; ientry < nEntries_Bkg; ++ientry)
   {
-    ntu_Sig -> GetEntry(ientry);
+    ntu_Bkg -> GetEntry(ientry);
     bkg_ASCII << lumi*weight*split << " , ";
+    h_Bkg["weight"] -> Fill(lumi*weight*split);
   }
   bkg_ASCII << endl;
   bkg_ASCII.close();
@@ -288,6 +290,8 @@ void plot_variables ( std::string varFile = "config/varFileList_complete", bool 
   {
     DrawVar(it->first.c_str(), 1, outFileName);
   }
+
+  DrawVar("weight", 1, outFileName);
 
   outFile -> Close();
   dummy -> Print((outFileName+"."+extension+"]").c_str(),extension.c_str());
