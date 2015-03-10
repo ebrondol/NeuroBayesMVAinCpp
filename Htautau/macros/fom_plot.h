@@ -16,12 +16,11 @@ using namespace std;
 
 float fom_plot(TH1F* histo1,TH1F* histo2, std::string plotname = "results/FoMplot.pdf", bool rebin = false, bool useMinbr = false) {
 
-
   float fom;
   float sys = 0.2; // systematic error
   TAMS* ta = new TAMS (histo1, histo2, sys);
-  if(rebin)  ta->rebinEqui();
-  if(useMinbr) ta->setbr(1e-6);
+  if(rebin){  ta->rebinEqui();}
+  if(useMinbr){ ta->setbr(1e-6);}
   ta->calc();
   fom = ta->ams_syst_stat();
 

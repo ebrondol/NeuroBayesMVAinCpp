@@ -41,8 +41,8 @@ int main (int argc, char** argv) {
       std::size_t pos = str.find("train");
       ExpFileName = str.substr(pos);     // get from "train" to the end
 
-      hists.push_back( new TH1F( (ExpFileName + "_signal").c_str() ,"Diskriminator Distribution",101,-1, 1));
-      hists.push_back( new TH1F( (ExpFileName + "_background").c_str() ,"Diskriminator Distribution",101,-1, 1));
+      hists.push_back( new TH1F( (ExpFileName + "_signal").c_str() ,"Diskriminator Distribution",501,-1, 1));
+      hists.push_back( new TH1F( (ExpFileName + "_background").c_str() ,"Diskriminator Distribution",501,-1, 1));
       nExpertises++;
     }
   } else { 	

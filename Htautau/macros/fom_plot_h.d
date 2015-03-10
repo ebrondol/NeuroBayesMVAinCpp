@@ -54,9 +54,10 @@
 ./macros/fom_plot_h.so: /usr/include/root/Buttons.h
 ./macros/fom_plot_h.so: /usr/include/root/TQObject.h
 ./macros/fom_plot_h.so: /usr/include/root/TAttBBox2D.h
+./macros/fom_plot_h.so: /usr/include/root/TPoint.h
 ./macros/fom_plot_h.so: /usr/include/root/TAttCanvas.h
 ./macros/fom_plot_h.so: /usr/include/root/TCanvasImp.h
 ./macros/fom_plot_h.so: /usr/include/root/TLegend.h /usr/include/root/TPave.h
 ./macros/fom_plot_h.so: /usr/include/root/TBox.h /usr/include/root/TStyle.h
 ./macros/fom_plot_h.so: /usr/include/root/cintdictversion.h /usr/include/root/RVersion.h
-fom_plot_h__ROOTBUILDVERSION= 5.34/20
+fom_plot_h__ROOTBUILDVERSION= 5.34/24

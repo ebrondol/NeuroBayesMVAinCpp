@@ -62,11 +62,11 @@ void NeuroBayesAnalysis(int maxEntries = 0, string outputName = "results/HttEval
   // Computing the fom
   float fom = 0.0;
   float fom_rebin = 0.0;
-  bool useMinrb = false;
   int zeroFomEvents = 0;
 
   for(unsigned int it = 0; it != Histograms.size(); it = it + 2){
 
+    bool useMinrb = false;
     bool rebin = false;
     std::string HistoName = Histograms.at(it)->GetName();
     unsigned int name_end = HistoName.find(".nb_signal");
@@ -81,6 +81,7 @@ void NeuroBayesAnalysis(int maxEntries = 0, string outputName = "results/HttEval
     }
 
 
+    useMinrb = true;
     rebin = true;
     HistoNameSaved = "results/FoM_" + HistoName.substr(0, name_end ) + "_rebin.pdf";
     fom_rebin = fom_plot(Histograms.at(it), Histograms.at(it+1), HistoNameSaved, rebin, useMinrb);
