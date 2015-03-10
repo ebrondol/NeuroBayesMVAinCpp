@@ -69,7 +69,8 @@ Summary:
 3) Job6.sh -> using different k in PreProFlag (1...9) with Simon preproflags + SHAPE OFF config
 4)         -> prova no weights in training 
 4) Job7.sh -> no weights in training (using varFileListSimon + different options + PreProFlag (1...9) )
- TODO :::: Job8.sh -> no weights in training (using varFileList + different options + PreProFlag (1...9) )
+4) Job7.sh -> scaling factor for sig weights in training (using varFileListSimon + different options + PreProFlag (1...9) )
+5) TODO :::: Job8.sh -> no weights in training (using different varFileList + 1 option iter 0 )
 
 -----------------------------------------------------------
 Questions:

@@ -28,18 +28,12 @@ int main() {
   int totNumbOfFiles = 1;
   vector<string> DEF_PRE_options;
   DEF_PRE_options.push_back("112");
-  DEF_PRE_options.push_back("212");
-  DEF_PRE_options.push_back("312");
   DEF_PRE_options.push_back("412");
-  DEF_PRE_options.push_back("512");
   DEF_PRE_options.push_back("612");
-  DEF_PRE_options.push_back("712");
   DEF_PRE_options.push_back("812");
-  DEF_PRE_options.push_back("912");
 
   vector<string> DEF_LOSS_options;
   DEF_LOSS_options.push_back("ENTROPY");
-  DEF_LOSS_options.push_back("QUADRATIC");
 
   vector<string> DEF_LEARNDIAG_options;
   DEF_LEARNDIAG_options.push_back("0");
@@ -63,7 +57,6 @@ int main() {
 
   vector<string> DEF_SHAPE_options;
   DEF_SHAPE_options.push_back("INCL");
-  DEF_SHAPE_options.push_back("OFF");
 
   ofstream summary(summaryFileName.c_str());
 

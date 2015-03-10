@@ -109,6 +109,8 @@ namespace VA {
 void plot_variables ( std::string varFile = "config/varFileList_complete", bool plotAllVariables = false )
 {
 
+  gROOT->SetBatch();
+
   if(!checkFileExistence(varFile))
     return;
 
@@ -217,6 +219,16 @@ void plot_variables ( std::string varFile = "config/varFileList_complete", bool 
   h_Bkg[category] = new TH1F(histoName.c_str(),"", 100, 0, 0.5);
   h_Bkg[category] -> Sumw2();
 
+  category = "weight_renorm";
+  std::string histoName = "h_Sig_"+category;
+  h_Sig[category] = new TH1F(histoName.c_str(),"", 100, 0, 0.5);
+  h_Sig[category] -> Sumw2();
+
+  histoName = "h_Bkg_"+category;
+  h_Bkg[category] = new TH1F(histoName.c_str(),"", 100, 0, 0.5);
+  h_Bkg[category] -> Sumw2();
+
+
   //Filling histos
   int ivar = 0;
   for(std::map<string,int>::iterator it = VarProProFlagsMap.begin(); it != VarProProFlagsMap.end(); ++it) {
@@ -227,6 +239,7 @@ void plot_variables ( std::string varFile = "config/varFileList_complete", bool 
   ntu_Bkg->SetBranchAddress("weight", &weight);
   ntu_Bkg->SetBranchAddress("splitFactor", &split);
 
+  double totweightSig = 0.0;
 
   sig_ASCII << "SIGNAL" << endl;
   ivar = 0;
@@ -249,11 +262,14 @@ void plot_variables ( std::string varFile = "config/varFileList_complete", bool 
     ntu_Sig -> GetEntry(ientry);
     sig_ASCII << lumi*weight*split << " , ";
     h_Sig["weight"] -> Fill(lumi*weight*split);
+    totweightSig += lumi*weight*split;
   }
   sig_ASCII << endl;
   sig_ASCII.close();
 
+  cout << "SIGNAL TOTAL WEIGHT : " << totweightSig << endl;
 
+  double totweightBkg = 0.0;
   bkg_ASCII << "BACKGROUND" << endl;
   int nEntries_Bkg = ntu_Bkg -> GetEntriesFast();
   ivar = 0;
@@ -276,9 +292,35 @@ void plot_variables ( std::string varFile = "config/varFileList_complete", bool 
     ntu_Bkg -> GetEntry(ientry);
     bkg_ASCII << lumi*weight*split << " , ";
     h_Bkg["weight"] -> Fill(lumi*weight*split);
+    totweightBkg += lumi*weight*split;
   }
   bkg_ASCII << endl;
   bkg_ASCII.close();
+
+  cout << "BACKGROUND TOTAL WEIGHT : " << totweightBkg << endl;
+
+  //RENORMALIZE SIG to BKG
+  double renormFactor = totweightBkg/totweightSig;
+  for(int ientry = 0; ientry < nEntries_Sig; ++ientry)
+  {
+    ntu_Sig -> GetEntry(ientry);
+    h_Sig["weight_renorm"] -> Fill(lumi*weight*split*renormFactor);
+  }
+
+//  cout << "integral : " << h_Sig["weight_renorm"] -> Integral() << endl;
+//  h_Sig["weight_renorm"] -> Scale(1/h_Sig["weight_renorm"] -> Integral());
+//  cout << "integral : " << h_Sig["weight_renorm"] -> Integral() << endl;
+
+  for(int ientry = 0; ientry < nEntries_Bkg; ++ientry)
+  {
+    ntu_Bkg -> GetEntry(ientry);
+    h_Bkg["weight_renorm"] -> Fill(lumi*weight*split);
+  }
+
+//  cout << "integral : " << h_Bkg["weight_renorm"] -> Integral() << endl;
+//  h_Bkg["weight_renorm"] -> Scale(1/h_Bkg["weight_renorm"] -> Integral());
+//  cout << "integral : " << h_Bkg["weight_renorm"] -> Integral() << endl;
+  cout << "scaling factor (Bkg/Sig)" << renormFactor << endl;
 
   //Plotting
   outFile = new TFile((outFileName+".root").c_str(),"RECREATE");
@@ -292,6 +334,7 @@ void plot_variables ( std::string varFile = "config/varFileList_complete", bool 
   }
 
   DrawVar("weight", 1, outFileName);
+  DrawVar("weight_renorm", 1, outFileName);
 
   outFile -> Close();
   dummy -> Print((outFileName+"."+extension+"]").c_str(),extension.c_str());
@@ -306,8 +349,8 @@ void DrawVar(const std::string& category, const int& rebin, const std::string& o
  TCanvas* c = new TCanvas(("c_"+category).c_str(),("Htautau - "+category).c_str(),0,0,700,600);
   c -> cd();
   c -> SetGridx();
-  if( h_Sig[category]->Integral() > 0 )
-    h_Sig[category] -> Scale( 1. * h_Bkg[category]->Integral() / h_Sig[category]->Integral() );
+//  if( h_Sig[category]->Integral() > 0 )
+//    h_Sig[category] -> Scale( 1. * h_Bkg[category]->Integral() / h_Sig[category]->Integral() );
 
   char axisTitle[50];
   h_Sig[category] -> Rebin(rebin);

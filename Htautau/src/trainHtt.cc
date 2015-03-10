@@ -34,6 +34,15 @@ bool checkFileExistence(string FileName){
 void teacher(string varFile, string optionFile, string inputFile, bool usingSimonConf = false) 
 {
 
+
+  bool testingOptions = false;
+  bool testingVariables = true;
+
+  double scalingWeightsFactor = 72.4135;
+
+  if(testingOptions) freopen ( ("output/"+optionFile).c_str(), "w", stdout );
+  if(testingVariables) freopen ( ("output/"+varFile).c_str(), "w", stdout );
+
   if(!checkFileExistence(varFile) || !checkFileExistence(optionFile) || !checkFileExistence(inputFile) )  
     return;
 
@@ -56,7 +65,10 @@ void teacher(string varFile, string optionFile, string inputFile, bool usingSimo
   nb->NB_DEF_NODE2(nvar+2);	// nodes in hidden layer
   nb->NB_DEF_NODE3(1);     	// nodes in output layer
 
-  string output = outputDir +  "trainHtt" + DefineNBFeatures(nb, optionFile);
+  string output = outputDir +  "trainHtt_";
+  string features = DefineNBFeatures(nb, optionFile);
+  if(testingOptions) output += features;
+  if(testingVariables) output += SaveMapinaString(VarProProFlagsMap);
   if(usingSimonConf) output += "_Simon"; 
 
   //-----
@@ -125,12 +137,13 @@ void teacher(string varFile, string optionFile, string inputFile, bool usingSimo
   for(int ievent=0; ievent< maxEvents; ievent++) {
     int ientry = InputTree->GetEntry(ievent);
     if(ientry > 0){
-      //nb->SetWeight(lumi*weight*split);
-      nb->SetWeight(1.0);
+      //nb->SetWeight(1.0);
       if(target){
+        nb->SetWeight(lumi*weight*split*scalingWeightsFactor);
         nb->SetTarget(1.0);
         sigCount++; // event is a SIGNAL event
       } else {
+        nb->SetWeight(lumi*weight*split);
         nb->SetTarget(-1.0);
         bkgCount++; // event is a BKG event
       }
@@ -145,6 +158,7 @@ void teacher(string varFile, string optionFile, string inputFile, bool usingSimo
   cout << "\t #Signal \t " << sigCount << endl;
   cout << "\t #Backgroud \t " << bkgCount << endl;
 
+  fclose ( stdout );
 
   //perform training
   string LogName = output + "_nb_teacher.log";
@@ -197,6 +211,8 @@ int main(int argc, char** argv) {
     string optionFile = argv[2];
     string inputFile = argv[3];
 
+    cout << "Running with following options files" << endl;
+    cout << varFile << "," << optionFile << "," << inputFile << endl;
     teacher(varFile,optionFile,inputFile);
 
   } 

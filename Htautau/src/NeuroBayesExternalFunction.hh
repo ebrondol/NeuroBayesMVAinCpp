@@ -4,10 +4,18 @@
 #include <fstream>
 #include <vector>
 #include <cstdlib>
+#include <algorithm>
 
 #include "NeuroBayesTeacher.hh"
 
 using namespace std;
+
+string convertInt(int number)
+{
+   stringstream ss;//create a stringstream
+   ss << number;//add number to the stream
+   return ss.str();//return a string with the contents of the stream
+}
 
 void ReadMap(std::map<string,int> mymap){
 
@@ -15,6 +23,16 @@ void ReadMap(std::map<string,int> mymap){
     std::cout << it->first << " => " << it->second << '\n';
 
   return;
+}
+
+string SaveMapinaString(std::map<string,int> mymap){
+
+  string allVariables;
+  for (std::map<string,int>::iterator it = mymap.begin(); it != mymap.end(); ++it)
+    allVariables += it->first + convertInt(it->second);
+
+  allVariables.erase(std::remove(allVariables.begin(), allVariables.end(), '_'), allVariables.end());
+  return allVariables;
 }
 
 void ReadVec(std::vector<TString> myvec){
@@ -148,7 +166,7 @@ string DefineNBFeatures(NeuroBayesTeacher* nb, string optionFile){
   OptionValue = readStringOptionFromFile(optionFile, "DEF_TASK");
   OptionValue_char = OptionValue.c_str();
   nb->NB_DEF_TASK(OptionValue_char);
-  outputname += "_TASK" + OptionValue;
+  outputname += "TASK" + OptionValue;
 
   // preprocessing global flag
   OptionValue = readStringOptionFromFile(optionFile, "DEF_PRE");
