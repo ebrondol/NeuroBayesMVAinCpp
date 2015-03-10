@@ -35,10 +35,13 @@ void teacher(string varFile, string optionFile, string inputFile, bool usingSimo
 {
 
 
-  bool testingOptions = false;
-  bool testingVariables = true;
+  bool testingOptions = true;
+  bool testingVariables = false;
 
-  double scalingWeightsFactor = 72.4135;
+  double sumWeightSignal = 277.096;
+  double sumWeightBackground = 4.15683;
+
+//  double scalingWeightsFactor = 72.4135;
 
   if(testingOptions) freopen ( ("output/"+optionFile).c_str(), "w", stdout );
   if(testingVariables) freopen ( ("output/"+varFile).c_str(), "w", stdout );
@@ -139,11 +142,13 @@ void teacher(string varFile, string optionFile, string inputFile, bool usingSimo
     if(ientry > 0){
       //nb->SetWeight(1.0);
       if(target){
-        nb->SetWeight(lumi*weight*split*scalingWeightsFactor);
+        nb->SetWeight(lumi*weight*split*sumWeightSignal);
+        //nb->SetWeight(lumi*weight*split*scalingWeightsFactor);
         nb->SetTarget(1.0);
         sigCount++; // event is a SIGNAL event
       } else {
-        nb->SetWeight(lumi*weight*split);
+        nb->SetWeight(lumi*weight*split*sumWeightBackground);
+        //nb->SetWeight(lumi*weight*split);
         nb->SetTarget(-1.0);
         bkgCount++; // event is a BKG event
       }
@@ -193,8 +198,8 @@ int main(int argc, char** argv) {
 
     if(argc==1){
       cout << "Running with default options files" << endl;
-      cout << "config/varFileList_Simon, config/optionList_Simon, input/tauSignalAndBackground.root" << endl;
-      teacher("config/varFileList_Simon","config/optionList_Simon","input/tauSignalAndBackground.root",1);
+      cout << "config/varFileList_Simon, config/optionList_Simon, input/tauSignalAndBackground_train_correct.root" << endl;
+      teacher("config/varFileList_Simon","config/optionList_Simon","input/tauSignalAndBackground_train_correct.root",1);
     } else {
       cerr << "Number of arguments not correct." << endl;
       cerr << "You should give in input the following input files: " << endl;
